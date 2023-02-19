@@ -1,26 +1,32 @@
 using Common.JWT;
+using IdentityService.Domain;
 using IdentityService.Domain.Entities;
+using IdentityService.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<IdentityDbContext>(opt =>
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IIdRepository,IdRepository>();
+builder.Services.AddScoped<IdDomainService>();
+builder.Services.AddDbContext<IdDbContext>(opt =>
 {
-    string connStr = Environment.GetEnvironmentVariable("ConnStr:Deafault");
+    string connStr = Environment.GetEnvironmentVariable("DefaultDB:ConnStr");
+    opt.UseNpgsql(connStr);
+    
 });
+
+var jwtOpt = new JWTOptions { Issuer = "issusr", Audience = "audience", Key = "qwertyuiopasdfghjklzxcvbnm", ExpireSeconds = 3153600 };
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
 {
-    var jwtOpt = new JWTOptions { Issuer = "issusr", Audience = "audience", Key = "qwertyuiopasdfghjklzxcvbnm", ExpireSeconds = 3153600 };
     x.TokenValidationParameters = new()
     {
         ValidateIssuer = true,
@@ -33,18 +39,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+
 IdentityBuilder idBuilder = builder.Services.AddIdentityCore<User>(options =>
 {
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     options.Password.RequireDigit=false;
     options.Password.RequireLowercase=false;
     options.Password.RequireUppercase=false;
     options.Password.RequireNonAlphanumeric=false;
     options.Password.RequiredLength = 6;
-    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
-    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+    
+    options.Lockout.DefaultLockoutTimeSpan= TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts=5;
+    options.Lockout.AllowedForNewUsers=true;
 });
+
 idBuilder = new IdentityBuilder(typeof(User), typeof(Role), builder.Services);
-idBuilder.AddEntityFrameworkStores<IdentityDbContext>()
+idBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<User>>();
@@ -57,12 +70,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseAuthentication(); 
 
-app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

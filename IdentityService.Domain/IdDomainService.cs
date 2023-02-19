@@ -6,12 +6,12 @@ using System.Security.Claims;
 
 namespace IdentityService.Domain;
 
-public class IdentityDomainService
+public class IdDomainService
 {
-    private readonly IIdentityRepository repository;
+    private readonly IIdRepository repository;
     private readonly ITokenService tokenService;
     private readonly IOptions<JWTOptions> optJWT;
-    public IdentityDomainService(IIdentityRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT)
+    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT)
     {
         this.repository = repository;
         this.tokenService = tokenService;
@@ -19,22 +19,10 @@ public class IdentityDomainService
     }
     public async Task<IdentityResult> SignUp(string userName,string email,string password)
     {
-        if (string.IsNullOrEmpty(userName))
-        {
-            return IdentityResult.Failed();
-        }
-        if(string.IsNullOrEmpty(email))
-        {
-            return IdentityResult.Failed();
-        }
-        if (string.IsNullOrEmpty(password))
-        {
-            return IdentityResult.Failed();
-        }
         User user = new(userName);
         user.Email = email;
-        await repository.CreateAsync(user,password);
-        return IdentityResult.Success;
+        var result = await repository.CreateAsync(user,password);
+        return result;
     }
     private async Task<SignInResult> CheckByUserNameAndPwdAsync(string userName, string password)
     {

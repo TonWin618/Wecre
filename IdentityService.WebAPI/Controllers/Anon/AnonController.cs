@@ -7,15 +7,15 @@ using System.Net;
 
 namespace IdentityService.WebAPI.Controllers.Anon;
 
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 [ApiController]
 [AllowAnonymous]
 public class AnonController : ControllerBase
 {
-    private readonly IIdentityRepository repository;
-    private readonly IdentityDomainService domainService;
+    private readonly IIdRepository repository;
+    private readonly IdDomainService domainService;
 
-    public AnonController(IIdentityRepository repository, IdentityDomainService domainService)
+    public AnonController(IIdRepository repository, IdDomainService domainService)
     {
         this.repository = repository;
         this.domainService = domainService;

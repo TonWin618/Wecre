@@ -8,7 +8,7 @@ namespace IdentityService.Domain.Entities
         public User(string userName):base(userName)
         {
             Id = Guid.NewGuid();
-            CreationTime = DateTime.Now;
+            CreationTime = DateTime.UtcNow;
         }
     }
 }

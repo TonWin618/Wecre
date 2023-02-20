@@ -11,11 +11,14 @@ public class IdDomainService
     private readonly IIdRepository repository;
     private readonly ITokenService tokenService;
     private readonly IOptions<JWTOptions> optJWT;
-    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT)
+    private readonly IEmailSender emailSender;
+
+    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT,IEmailSender emailSender)
     {
         this.repository = repository;
         this.tokenService = tokenService;
         this.optJWT = optJWT;
+        this.emailSender = emailSender;
     }
     public async Task<IdentityResult> SignUp(string userName,string email,string password)
     {
@@ -86,4 +89,32 @@ public class IdDomainService
         }
         return tokenService.BuildToken(claims, optJWT.Value);
     }
+
+    public async Task<bool> GenerateChangePasswordAsync(User user)
+    {
+        await emailSender.SendChangeTokenAsync(user.Email!, "VerifyEmail", "123456");
+        return true;
+    }
+
+    public async Task<bool> GenerateChangeEmailAsync(User user,string email)
+    {
+        if(null == repository.FindByEmailAsync(email))
+        {
+            await emailSender.SendChangeTokenAsync(email!, "VerifyEmail", "123456");
+            await emailSender.SendChangeTokenAsync(user.Email!, "VerifyEmail", "123456");
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<IdentityResult> ChangePasswordAsync(User user,string password)
+    {
+
+    }
+
+    public async Task<IdentityResult> ChangeEmailAsync(User user,string email)
+    {
+
+    }
+
 }

@@ -41,6 +41,10 @@ namespace IdentityService.Infrastructure
         {
             return await userManager.FindByNameAsync(userName);
         }
+        public async Task<User?> FindByIdAsync(Guid id)
+        {
+            return await userManager.FindByIdAsync(id.ToString());
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -77,14 +81,6 @@ namespace IdentityService.Infrastructure
         public async Task<IList<string>> GetRolesAsync(User user)
         {
             return await userManager.GetRolesAsync(user);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IQueryable<Role> GetRoleList()
-        {
-            return roleManager.Roles;
         }
         /// <summary>
         /// 
@@ -129,34 +125,11 @@ namespace IdentityService.Infrastructure
         /// 
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="provider"></param>
-        /// <param name="purpose"></param>
-        /// <returns></returns>
-        public async Task<string> GenerateTFTokenAsync(User user,string provider)
-        {
-            return await userManager.GenerateTwoFactorTokenAsync(user, provider);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="provider"></param>
-        /// <param name="purpose"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyTFTokenAsync(User user, string provider, string token)
-        {
-            return await userManager.VerifyTwoFactorTokenAsync(user, provider, token);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<string> GenerateEmailTokenAsync(User user)
+        public async Task<string> GenerateEmailTokenAsync(User user)
         {
-            throw new NotImplementedException();
+            return await userManager.GenerateTwoFactorTokenAsync(user, "Email");
         }
         /// <summary>
         /// 
@@ -165,9 +138,9 @@ namespace IdentityService.Infrastructure
         /// <param name="token"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<string> VerifyEmailTokenAsync(User user, string token)
+        public async Task<bool> VerifyEmailTokenAsync(User user, string token)
         {
-            throw new NotImplementedException();
+            return await userManager.VerifyTwoFactorTokenAsync(user, "Email",token);
         }
         /// <summary>
         /// 
@@ -207,7 +180,7 @@ namespace IdentityService.Infrastructure
             return await userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        public async Task<IdentityResult> ConfirmEmailAsync(User user,string token)
+        public async Task<IdentityResult> VerifyConfirmEmailTokenAsync(User user,string token)
         {
             return await userManager.ConfirmEmailAsync(user, token);
         }

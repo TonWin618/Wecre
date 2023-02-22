@@ -36,6 +36,10 @@ public class AnonController : ControllerBase
         {
             return BadRequest("Format error");
         }
+        if (null != await repository.FindByNameAsync(req.UserName))
+        {
+            return BadRequest("The user name you have selected is already taken");
+        }
         if(IdentityResult.Success == await domainService.SignUp(req.UserName, req.Email, req.Password)){
             return Ok("Registered successfully");
         }
@@ -57,7 +61,7 @@ public class AnonController : ControllerBase
         else
         {
             string msg = checkResult.ToString();
-            return BadRequest("Login failure. " + msg);
+            return BadRequest("Login failure" + msg);
         }
     }
 
@@ -86,12 +90,24 @@ public class AnonController : ControllerBase
         {
             return BadRequest();
         }
+
         var user = new Domain.Entities.User("admin");
-        if (IdentityResult.Success == await repository.CreateUserAsync(user, "123456"))
+        user.Email= "admin@admin.com";
+        if (IdentityResult.Success != await repository.CreateUserAsync(user, "123456"))
         {
-            await domainService.AddUserToRoleAsync(user, "Admin");
-            return Ok();
+            return BadRequest();
         };
-        return BadRequest();
+
+        Role role = new Role { Name = "Admin" };
+        if (IdentityResult.Success != await repository.CreateRoleAsync(role))
+        {
+            return BadRequest();
+        }
+
+        if (IdentityResult.Success != await repository.AddToRoleAsync(user, "Admin"))
+        {
+            return BadRequest();
+        };
+        return Ok();
     }
 }

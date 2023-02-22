@@ -7,8 +7,7 @@ using System.Security.Claims;
 
 namespace IdentityService.WebAPI.Controllers.User
 {
-    [Route("api/[controller]")]
-    [Authorize(two)]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
     public class UserController : ControllerBase
@@ -23,27 +22,90 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> ChangeMyPassword(ChangeMyPasswordRequest req)
         {
-            string userName = this.User.FindFirstValue(ClaimTypes.Name);
-            Domain.Entities.User user = await repository.FindByNameAsync(userName);
-            if(IdentityResult.Success == await repository.ChangePasswordAsync(user, req.curPassword, req.newPassword))
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if(!await repository.VerifyEmailTokenAsync(user, req.token))
             {
-                return Ok("Your password is changed");
+                return BadRequest("Token invalid");
+            }
+            if(IdentityResult.Success != await repository.UpdatePassword(user,req.newPassword))
+            {
+                return BadRequest("Password change failed");
             };
-            return BadRequest("Password change failed");
-        }
-        [HttpPost]
-        public async Task<ActionResult> ChangeMyEmail(ChangeMyEmailRequest req)
-        {
-            string userName = this.User.FindFirstValue(ClaimTypes.Name);
-            Domain.Entities.User user = await repository.FindByNameAsync(userName);
-            return BadRequest();
+            return Ok("Your password has changed");
         }
         [HttpPost]
         public async Task<ActionResult> ChangeMyUserName(ChangeMyUserNameRequest req)
         {
-            string userName = this.User.FindFirstValue(ClaimTypes.Name);
-            Domain.Entities.User user = await repository.FindByNameAsync(userName);
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if (!await repository.VerifyEmailTokenAsync(user, req.token))
+            {
+                return BadRequest("Token invalid");
+            }
+            if (null != await repository.FindByNameAsync(req.newUserName))
+            {
+                return BadRequest("The user name you have selected is already taken");
+            }
+            if (IdentityResult.Success != await repository.UpdateUserName(user, req.newUserName))
+            {
+                return BadRequest("User name change failed");
+            };
+            return Ok("Your user name has changed");
+        }
+        [HttpPost]
+        public async Task<ActionResult> ChangeMyEmail(ChangeMyEmailRequest req)
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if (!await repository.VerifyEmailTokenAsync(user, req.token))
+            {
+                return BadRequest("Token invalid");
+            }
+            if (IdentityResult.Success != await repository.UpdateEmail(user, req.newEmail))
+            {
+                return BadRequest("User name change failed");
+            };
+            return Ok("Your user name has changed");
+        }
+        [HttpPost]
+        public async Task<ActionResult> SendEmailToken()
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if(await domainService.SendEmailTokenAsync(user))
+            {
+                return Ok();
+            };
             return BadRequest();
+        }
+        [HttpPost]
+        public async Task<ActionResult> SendConfirmationEmail()
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if (await domainService.SendEmailConfirmTokenAsync(user))
+            {
+                return Ok("Confirmation email was sent successfully");
+            }
+            else
+            {
+                return BadRequest("Confirmation email failed to send");
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> ConfirmEmailAddress(ConfirmEmailRequest req)
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if (IdentityResult.Success == await repository.VerifyConfirmEmailTokenAsync(user,req.token))
+            {
+                return Ok("The email address has been confirmed");
+            }
+            else
+            {
+                return BadRequest("Failed to confirm the email address");
+            }
         }
     }
 }

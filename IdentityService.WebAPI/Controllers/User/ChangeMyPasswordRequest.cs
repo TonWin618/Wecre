@@ -1,1 +1,1 @@
-﻿public record ChangeMyPasswordRequest(string curPassword, string newPassword);
+﻿public record ChangeMyPasswordRequest(string newPassword,string token);

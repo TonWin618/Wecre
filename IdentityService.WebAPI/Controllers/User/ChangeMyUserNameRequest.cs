@@ -1,1 +1,1 @@
-﻿public record ChangeMyUserNameRequest(string newUserName);
+﻿public record ChangeMyUserNameRequest(string newUserName,string token);

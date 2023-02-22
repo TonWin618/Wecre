@@ -3,16 +3,17 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Infrastructure
 {
-    internal class MockEmailSender : IEmailSender
+    public class MockEmailSender : IEmailSender
     {
         private readonly ILogger<MockEmailSender> logger;
         public MockEmailSender(ILogger<MockEmailSender> logger)
         {
             this.logger = logger;
         }
-        public Task SendChangeTokenAsync(string toEmail, string AuthToken, string changeToken)
+        public async Task<bool> SendTokenAsync(string toEmail,string changeToken)
         {
-            return Task.CompletedTask;
+            logger.LogInformation($"toEmail:{toEmail},ChangeToken:{changeToken}");
+            return true;
         }
     }
 }

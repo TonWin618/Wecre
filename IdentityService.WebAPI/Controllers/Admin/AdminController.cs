@@ -1,28 +1,32 @@
 ﻿using IdentityService.Domain;
 using IdentityService.Domain.Entities;
-using IdentityService.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.WebAPI.Controllers.Admin;
 
-[ApiController]
 [Route("api/[controller]/[action]")]
-[Authorize(Roles = "Admin")]
+[ApiController]
+[Authorize(Roles ="Admin")]
 public class AdminController : ControllerBase
 {
+    private readonly IIdRepository repository;
     private readonly IdDomainService domainService;
-    private readonly IdRepository repository;
-    public AdminController(IdDomainService domainService,IdRepository repository)
+    public AdminController(IdDomainService domainService,IIdRepository repository)
     {
         this.repository = repository;
         this.domainService = domainService;
     }
-    [HttpGet]
-    public async Task<IQueryable<Role>> GetRoleList()
+    [HttpPost]
+    public async Task<ActionResult> CreateRole(CreateRoleRequest req)
     {
-        return await repository.GetRolesAsync();
+        Role role = new() { Name = req.roleName };
+        if (IdentityResult.Success == await repository.CreateRoleAsync(role))
+        {
+            return Ok("The role is created successfully");
+        };
+        return BadRequest();
     }
 }
 

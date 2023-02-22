@@ -19,11 +19,15 @@ public class IdDomainService
         this.tokenService = tokenService;
         this.optJWT = optJWT;
     }
-    public async Task<IdentityResult> SignUp(string userName,string email,string password)
+    public async Task<IdentityResult> SignUp(string userName,string email,string password,string token)
     {
         User user = new(userName);
         user.Email = email;
         var result = await repository.CreateUserAsync(user, password);
+        if (repository.ConfirmEmailAsync(user, token))
+        {
+
+        }
         return result;
     }
     public async Task<(SignInResult, string)> LoginByUserNameAndPwdAsync(string userName, string password)
@@ -50,17 +54,20 @@ public class IdDomainService
         var result = await repository.AddToRoleAsync(user, roleName);
         return result;
     }
-    public async Task<bool> SendEmailTokenAsync(User user, string newEmail)
+
+
+    public async Task<bool> SendEmailConfirmLinkAsync(User user)
     {
-        string token = await repository.GenerateChangeEmailTokenAsync(user, newEmail);
-        emailSender.SendChangeTokenAsync(newEmail, token);
-        return true;
-    }
-    public async Task<bool> SendEmailChangeLinkAsync(User user, string newEmail)
-    {
-        string token = await repository.GenerateChangeEmailTokenAsync(user, newEmail);
-        emailSender.SendChangeTokenAsync(newEmail, token);
-        return true;
+        string token = await repository.GenerateConfirmEmailTokenAsync(user);
+        try
+        {
+            await emailSender.SendTokenAsync(user.Email, token);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
     private async Task<string> BuildTokenAsync(User user)
     {
@@ -77,11 +84,11 @@ public class IdDomainService
     {
         if (user == null)
         {
-            return (SignInResult.LockedOut, null);
+            return (SignInResult.LockedOut, "");
         }
         if (await repository.IsLockedOutAsync(user))
         {
-            return (SignInResult.Failed, null);
+            return (SignInResult.Failed, "");
         }
         if (await repository.CheckPasswordAsync(user, password))
         {

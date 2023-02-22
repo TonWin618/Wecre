@@ -8,6 +8,7 @@ using System.Security.Claims;
 namespace IdentityService.WebAPI.Controllers.User
 {
     [Route("api/[controller]")]
+    [Authorize(two)]
     [ApiController]
     [Authorize]
     public class UserController : ControllerBase

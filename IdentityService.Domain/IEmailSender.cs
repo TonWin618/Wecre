@@ -2,5 +2,5 @@
 
 public interface IEmailSender
 {
-    public Task SendChangeTokenAsync(string toEmail, string changeToken);
+    public Task SendTokenAsync(string toEmail, string changeToken);
 }

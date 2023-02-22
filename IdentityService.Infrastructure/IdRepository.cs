@@ -13,67 +13,203 @@ namespace IdentityService.Infrastructure
             this.userManager = userManager;
             this.roleManager = roleManager;
         }
-
-        public Task<IdentityResult> AccessFailedAsync(User user)
-        {
-            return userManager.AccessFailedAsync(user);
-        }
-
-        public async Task<bool> RoleExistsAsync(User user, string roleName)
-        {
-            return await roleManager.RoleExistsAsync(roleName);
-        }
-        public async Task<IdentityResult> CreateRoleAsync(Role role)
-        {
-            return await roleManager.CreateAsync(role);
-        }
-        public async Task<IQueryable<Role>> GetRolesAsync()
-        {
-            return roleManager.Roles;
-        }
-        public async Task<IdentityResult> AddToRoleAsync(User user, string roleName)
-        {
-            return await userManager.AddToRoleAsync(user, roleName);
-        }
-        public async Task<IdentityResult> RemoveFromRoleAsync(User user,string roleName)
-        {
-            return await userManager.RemoveFromRoleAsync(user, roleName);
-        }
-        public async Task<bool> IsLockedOutAsync(User user)
-        {
-            return await userManager.IsLockedOutAsync(user);
-        }
-        public async Task<bool> CheckPasswordAsync(User user, string password)
-        {
-            return await userManager.CheckPasswordAsync(user, password);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public async Task<IdentityResult> CreateUserAsync(User user, string password)
         {
             return await userManager.CreateAsync(user, password);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<User?> FindByEmailAsync(string email)
         {
             return await userManager.FindByEmailAsync(email);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public async Task<User?> FindByNameAsync(string userName)
         {
             return await userManager.FindByNameAsync(userName);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task<bool> CheckPasswordAsync(User user, string password)
+        {
+            return await userManager.CheckPasswordAsync(user, password);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public Task<IdentityResult> AccessFailedAsync(User user)
+        {
+            return userManager.AccessFailedAsync(user);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<bool> IsLockedOutAsync(User user)
+        {
+            return await userManager.IsLockedOutAsync(user);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<IList<string>> GetRolesAsync(User user)
         {
             return await userManager.GetRolesAsync(user);
         }
-        public async Task<IdentityResult> ChangeEmailAsync(User user, string newEmail,string token)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<Role> GetRoleList()
         {
+            return roleManager.Roles;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<bool> RoleExistsAsync(User user, string roleName)
+        {
+            return await roleManager.RoleExistsAsync(roleName);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> CreateRoleAsync(Role role)
+        {
+            return await roleManager.CreateAsync(role);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> AddToRoleAsync(User user, string roleName)
+        {
+            return await userManager.AddToRoleAsync(user, roleName);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> RemoveFromRoleAsync(User user,string roleName)
+        {
+            return await userManager.RemoveFromRoleAsync(user, roleName);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="provider"></param>
+        /// <param name="purpose"></param>
+        /// <returns></returns>
+        public async Task<string> GenerateTFTokenAsync(User user,string provider)
+        {
+            return await userManager.GenerateTwoFactorTokenAsync(user, provider);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="provider"></param>
+        /// <param name="purpose"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyTFTokenAsync(User user, string provider, string token)
+        {
+            return await userManager.VerifyTwoFactorTokenAsync(user, provider, token);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<string> GenerateEmailTokenAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<string> VerifyEmailTokenAsync(User user, string token)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> UpdatePassword(User user, string newPassword)
+        {
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            return await userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="newEmail"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> UpdateEmail(User user, string newEmail)
+        {
+            var token = await userManager.GenerateChangeEmailTokenAsync(user,newEmail);
             return await userManager.ChangeEmailAsync(user, newEmail, token);
         }
-        public async Task<IdentityResult> ChangePasswordAsync(User user, string curPassword, string newPassword)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="newUserName"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> UpdateUserName(User user, string newUserName)
         {
-            return await userManager.ChangePasswordAsync(user, curPassword, newPassword);
+            return await userManager.SetUserNameAsync(user, newUserName);
         }
-        public async Task<string> GenerateChangeEmailTokenAsync(User user, string newEmail)
+
+        public async Task<string> GenerateConfirmEmailTokenAsync(User user)
         {
-            return await userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            return await userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(User user,string token)
+        {
+            return await userManager.ConfirmEmailAsync(user, token);
         }
     }
 }

@@ -19,57 +19,61 @@ namespace IdentityService.Infrastructure
             return userManager.AccessFailedAsync(user);
         }
 
+        public async Task<bool> RoleExistsAsync(User user, string roleName)
+        {
+            return await roleManager.RoleExistsAsync(roleName);
+        }
+        public async Task<IdentityResult> CreateRoleAsync(Role role)
+        {
+            return await roleManager.CreateAsync(role);
+        }
+        public async Task<IQueryable<Role>> GetRolesAsync()
+        {
+            return roleManager.Roles;
+        }
         public async Task<IdentityResult> AddToRoleAsync(User user, string roleName)
         {
-            if(!await roleManager.RoleExistsAsync(roleName))
-            {
-                Role role = new Role { Name=roleName};
-                var result = await roleManager.CreateAsync(role);
-                if (!result.Succeeded)
-                {
-                    return result;
-                }
-            }
             return await userManager.AddToRoleAsync(user, roleName);
         }
-
-        public async Task<SignInResult> CheckPwdAsync(User user, string password)
+        public async Task<IdentityResult> RemoveFromRoleAsync(User user,string roleName)
         {
-            if(await userManager.IsLockedOutAsync(user))
-            {
-                return SignInResult.LockedOut;
-            }
-            var result = await userManager.CheckPasswordAsync(user, password);
-            if (result == true)
-            {
-                return SignInResult.Success;
-            }
-            else
-            {
-                await AccessFailedAsync(user);
-                return SignInResult.Failed;
-            }
+            return await userManager.RemoveFromRoleAsync(user, roleName);
         }
-
-        public async Task<IdentityResult> CreateAsync(User user, string password)
+        public async Task<bool> IsLockedOutAsync(User user)
+        {
+            return await userManager.IsLockedOutAsync(user);
+        }
+        public async Task<bool> CheckPasswordAsync(User user, string password)
+        {
+            return await userManager.CheckPasswordAsync(user, password);
+        }
+        public async Task<IdentityResult> CreateUserAsync(User user, string password)
         {
             return await userManager.CreateAsync(user, password);
-            
         }
-
         public async Task<User?> FindByEmailAsync(string email)
         {
             return await userManager.FindByEmailAsync(email);
         }
-
         public async Task<User?> FindByNameAsync(string userName)
         {
             return await userManager.FindByNameAsync(userName);
         }
-
         public async Task<IList<string>> GetRolesAsync(User user)
         {
             return await userManager.GetRolesAsync(user);
+        }
+        public async Task<IdentityResult> ChangeEmailAsync(User user, string newEmail,string token)
+        {
+            return await userManager.ChangeEmailAsync(user, newEmail, token);
+        }
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string curPassword, string newPassword)
+        {
+            return await userManager.ChangePasswordAsync(user, curPassword, newPassword);
+        }
+        public async Task<string> GenerateChangeEmailTokenAsync(User user, string newEmail)
+        {
+            return await userManager.GenerateChangeEmailTokenAsync(user, newEmail);
         }
     }
 }

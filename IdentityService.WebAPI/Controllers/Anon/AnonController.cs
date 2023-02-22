@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain;
+using IdentityService.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -38,11 +39,7 @@ public class AnonController : ControllerBase
         if(IdentityResult.Success == await domainService.SignUp(req.UserName, req.Email, req.Password)){
             return Ok("Registered successfully");
         }
-        else
-        {
-            return BadRequest("Registration failed");
-        }
-        
+        return BadRequest("Registration failed");
     }
 
     [HttpPost]
@@ -55,7 +52,7 @@ public class AnonController : ControllerBase
         }
         else if (checkResult.IsLockedOut)
         {
-            return StatusCode((int)HttpStatusCode.Locked, "The user is locked");
+            return StatusCode((int)HttpStatusCode.Locked, "The user is locked out");
         }
         else
         {
@@ -74,12 +71,27 @@ public class AnonController : ControllerBase
         }
         else if (checkResult.IsLockedOut)
         {
-            return StatusCode((int)HttpStatusCode.Locked, "The user is locked");
+            return StatusCode((int)HttpStatusCode.Locked, "The user is locked out");
         }
         else
         {
             string msg = checkResult.ToString();
             return BadRequest("Login failure. " + msg);
         }
+    }
+    [HttpPost]
+    public async Task<ActionResult<string>> CreateWorld()
+    {
+        if (repository.FindByNameAsync("admin") == null)
+        {
+            return BadRequest();
+        }
+        var user = new Domain.Entities.User("admin");
+        if (IdentityResult.Success == await repository.CreateUserAsync(user, "123456"))
+        {
+            await domainService.AddUserToRoleAsync(user, "Admin");
+            return Ok();
+        };
+        return BadRequest();
     }
 }

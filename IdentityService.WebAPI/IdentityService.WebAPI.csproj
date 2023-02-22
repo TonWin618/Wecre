@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dcd7c566-d93d-41de-a200-d7814c0848b2</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
@@ -20,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\User\" />
     <Folder Include="Controllers\Admin\" />
   </ItemGroup>
 

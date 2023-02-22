@@ -13,71 +13,55 @@ public class IdDomainService
     private readonly IOptions<JWTOptions> optJWT;
     private readonly IEmailSender emailSender;
 
-    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT,IEmailSender emailSender)
+    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT)
     {
         this.repository = repository;
         this.tokenService = tokenService;
         this.optJWT = optJWT;
-        this.emailSender = emailSender;
     }
     public async Task<IdentityResult> SignUp(string userName,string email,string password)
     {
         User user = new(userName);
         user.Email = email;
-        var result = await repository.CreateAsync(user,password);
+        var result = await repository.CreateUserAsync(user, password);
         return result;
     }
-    private async Task<SignInResult> CheckByUserNameAndPwdAsync(string userName, string password)
+    public async Task<(SignInResult, string)> LoginByUserNameAndPwdAsync(string userName, string password)
     {
         var user = await repository.FindByNameAsync(userName);
-        if (user == null)
-        {
-            return SignInResult.Failed;
-        }
-        var result = await repository.CheckPwdAsync(user, password);
-        return result;
-    }
-    private async Task<SignInResult> CheckByEmailAndPwdAsync(string userName, string password)
-    {
-        var user = await repository.FindByEmailAsync(userName);
-        if (user == null)
-        {
-            return SignInResult.Failed;
-        }
-        var result = await repository.CheckPwdAsync(user, password);
-        return result;
-    }
-    public async Task<(SignInResult result, string token)> LoginByUserNameAndPwdAsync(string userName, string password)
-    {
-        var checkResult = await CheckByUserNameAndPwdAsync(userName, password);
-        if(checkResult.Succeeded)
-        {
-            var user = await repository.FindByNameAsync(userName);
-            string token = await BuildTokenAsync(user!);
-            return (SignInResult.Success, token);
-        }
-        else
-        {
-            return (checkResult, null)!;
-        }
-        
+        return await CheckPasswordAsync(user, password);
     }
 
-    public async Task<(SignInResult result, string token)> LoginByEmailAndPwdAsync(string email, string password)
+    public async Task<(SignInResult, string)> LoginByEmailAndPwdAsync(string email, string password)
     {
-        var checkResult = await CheckByEmailAndPwdAsync(email, password);
-        if (checkResult.Succeeded)
-        {
-            var user = await repository.FindByEmailAsync(email);
-            string token = await BuildTokenAsync(user!);
-            return(SignInResult.Success, token);
-        }
-        else
-        {
-            return (checkResult, null)!;
-        }
+        var user = await repository.FindByEmailAsync(email);
+        return await CheckPasswordAsync(user, password);
     }
-
+    public async Task<IdentityResult> AddUserToRoleAsync(User user, string roleName)
+    {
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user));
+        }
+        if (await repository.RoleExistsAsync(user, roleName))
+        {
+            return IdentityResult.Failed();
+        }
+        var result = await repository.AddToRoleAsync(user, roleName);
+        return result;
+    }
+    public async Task<bool> SendEmailTokenAsync(User user, string newEmail)
+    {
+        string token = await repository.GenerateChangeEmailTokenAsync(user, newEmail);
+        emailSender.SendChangeTokenAsync(newEmail, token);
+        return true;
+    }
+    public async Task<bool> SendEmailChangeLinkAsync(User user, string newEmail)
+    {
+        string token = await repository.GenerateChangeEmailTokenAsync(user, newEmail);
+        emailSender.SendChangeTokenAsync(newEmail, token);
+        return true;
+    }
     private async Task<string> BuildTokenAsync(User user)
     {
         var roles = await repository.GetRolesAsync(user);
@@ -89,32 +73,20 @@ public class IdDomainService
         }
         return tokenService.BuildToken(claims, optJWT.Value);
     }
-
-    public async Task<bool> GenerateChangePasswordAsync(User user)
+    private async Task<(SignInResult,string)> CheckPasswordAsync(User user, string password)
     {
-        await emailSender.SendChangeTokenAsync(user.Email!, "VerifyEmail", "123456");
-        return true;
-    }
-
-    public async Task<bool> GenerateChangeEmailAsync(User user,string email)
-    {
-        if(null == repository.FindByEmailAsync(email))
+        if (user == null)
         {
-            await emailSender.SendChangeTokenAsync(email!, "VerifyEmail", "123456");
-            await emailSender.SendChangeTokenAsync(user.Email!, "VerifyEmail", "123456");
-            return true;
+            return (SignInResult.LockedOut, null);
         }
-        return false;
+        if (await repository.IsLockedOutAsync(user))
+        {
+            return (SignInResult.Failed, null);
+        }
+        if (await repository.CheckPasswordAsync(user, password))
+        {
+            return (SignInResult.Success, await BuildTokenAsync(user!));
+        }
+        return (SignInResult.Failed, await BuildTokenAsync(user!));
     }
-
-    public async Task<IdentityResult> ChangePasswordAsync(User user,string password)
-    {
-
-    }
-
-    public async Task<IdentityResult> ChangeEmailAsync(User user,string email)
-    {
-
-    }
-
 }

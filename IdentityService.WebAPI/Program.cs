@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IIdRepository,IdRepository>();
+builder.Services.AddLogging();
 builder.Services.AddScoped<IdDomainService>();
 builder.Services.AddDbContext<IdDbContext>(opt =>
 {
@@ -52,8 +53,8 @@ IdentityBuilder idBuilder = builder.Services.AddIdentityCore<User>(options =>
     options.Password.RequiredLength = 6;
     
     options.Lockout.DefaultLockoutTimeSpan= TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts=5;
-    options.Lockout.AllowedForNewUsers=true;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 });
 
 idBuilder = new IdentityBuilder(typeof(User), typeof(Role), builder.Services);

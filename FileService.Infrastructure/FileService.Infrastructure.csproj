@@ -12,15 +12,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.34" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Initializer\Common.Initializer.csproj" />
     <ProjectReference Include="..\FileService.Domain\FileService.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

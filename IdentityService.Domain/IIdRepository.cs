@@ -12,13 +12,13 @@ public interface IIdRepository
     Task<bool> CheckPasswordAsync(User user, string password);//Check password
     Task<bool> IsLockedOutAsync(User user);//
     Task<IdentityResult> AccessFailedAsync(User user); //Log a failed login
+    Task<IdentityResult> ResetAccessFailedCountAsync(User user);
     Task<IList<string>> GetRolesAsync(User user);//Get all roles for user
 
     Task<string> GenerateConfirmEmailTokenAsync(User user);
     Task<IdentityResult> VerifyConfirmEmailTokenAsync(User user, string token);
     Task<string> GenerateEmailTokenAsync(User user);
     Task<bool> VerifyEmailTokenAsync(User user, string token);
-
     Task<IdentityResult> UpdatePassword(User user, string newPassword);
     Task<IdentityResult> UpdateEmail(User user, string newEmail);
     Task<IdentityResult> UpdateUserName(User user, string newUserName);

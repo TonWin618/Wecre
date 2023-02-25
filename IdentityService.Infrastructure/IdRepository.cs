@@ -69,6 +69,15 @@ namespace IdentityService.Infrastructure
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
+        public Task<IdentityResult> ResetAccessFailedCountAsync(User user)
+        {
+            return userManager.ResetAccessFailedCountAsync(user);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<bool> IsLockedOutAsync(User user)
         {
             return await userManager.IsLockedOutAsync(user);
@@ -174,12 +183,21 @@ namespace IdentityService.Infrastructure
         {
             return await userManager.SetUserNameAsync(user, newUserName);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<string> GenerateConfirmEmailTokenAsync(User user)
         {
             return await userManager.GenerateEmailConfirmationTokenAsync(user);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task<IdentityResult> VerifyConfirmEmailTokenAsync(User user,string token)
         {
             return await userManager.ConfirmEmailAsync(user, token);

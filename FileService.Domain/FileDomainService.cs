@@ -15,13 +15,12 @@ public class FileDomainService
         this.remoteStorage = storageClients.First(c => c.StorageType == StorageType.Public);
     }
 
-    public async Task<UploadItem> UpLoadAsync(Stream stream, string extension, CancellationToken cancellationToken)
+    public async Task<UploadItem> UpLoadAsync(Stream stream,string fileName, string extension, CancellationToken cancellationToken)
     {
         string hash = HashHelper.ComputeSha256Hash(stream);
         long fileSize = stream.Length;
         DateTime today = DateTime.Today;
-        string fileName = $"{hash}{extension}";
-        string key = $"{today.Year}/{today.Month}/{today.Day}/{fileName}";
+        string key = $"{today.Year}/{today.Month}/{today.Day}/{hash}{extension}";
         var oldUploadItem = await repository.FindFileAsync(fileSize, hash);
         if (oldUploadItem != null)
         {
@@ -32,6 +31,6 @@ public class FileDomainService
         stream.Position = 0;
         Uri remoteUrl = await remoteStorage.SaveAsync(key, stream, cancellationToken);
 
-        return UploadItem.Create(Guid.NewGuid(), fileSize, fileName, hash, backupUrl, remoteUrl);
+        return UploadItem.Create(Guid.NewGuid(), fileSize, fileName+extension, hash, backupUrl, remoteUrl);
     }
 }

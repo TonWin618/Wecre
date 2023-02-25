@@ -1,6 +1,7 @@
 ﻿using Common.JWT;
 using IdentityService.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace IdentityService.Domain;
@@ -9,10 +10,10 @@ public class IdDomainService
 {
     private readonly IIdRepository repository;
     private readonly ITokenService tokenService;
-    private readonly JWTOptions optJWT;
+    private readonly IOptions<JWTOptions> optJWT;
     private readonly IEmailSender emailSender;
 
-    public IdDomainService(IIdRepository repository, ITokenService tokenService, JWTOptions optJWT, IEmailSender emailSender)
+    public IdDomainService(IIdRepository repository, ITokenService tokenService, IOptions<JWTOptions> optJWT, IEmailSender emailSender)
     {
         this.repository = repository;
         this.tokenService = tokenService;
@@ -71,22 +72,23 @@ public class IdDomainService
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
-        return tokenService.BuildToken(claims, optJWT);
+        return tokenService.BuildToken(claims, optJWT.Value);
     }
     private async Task<(SignInResult,string)> CheckPasswordAsync(User user, string password)
     {
         if (user == null)
         {
-            return (SignInResult.LockedOut, "");
+            return (SignInResult.Failed, "");
         }
         if (await repository.IsLockedOutAsync(user))
         {
-            return (SignInResult.Failed, "");
+            return (SignInResult.LockedOut, "");
         }
         if (await repository.CheckPasswordAsync(user, password))
         {
             return (SignInResult.Success, await BuildTokenAsync(user!));
         }
+        await repository.AccessFailedAsync(user);
         return (SignInResult.Failed, "");
     }
 }

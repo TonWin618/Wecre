@@ -33,16 +33,13 @@ namespace FileService.WebAPI.Controllers
                 return new FileExistsResponse(true, item.remoteUrl);
             }
         }
+
         [HttpPost]
         public async Task<ActionResult<Uri>> Upload([FromForm]UploadRequest req, CancellationToken cancellationToken = default)
         {
-            IFormFile? file = req.File;
-            string extension = Path.GetExtension(file.FileName);
-            UploadItem uploadItem;
-            using Stream stream = file.OpenReadStream();
-            {
-                uploadItem = await domainService.UpLoadAsync(stream, extension, cancellationToken);
-            }
+            string extension = Path.GetExtension(req.File.FileName);
+            using Stream stream = req.File.OpenReadStream();
+            UploadItem uploadItem = await domainService.UpLoadAsync(stream, req.FileNameWithoutExtension, extension, cancellationToken);
             await dbContext.AddAsync(uploadItem);
             await dbContext.SaveChangesAsync();
             return uploadItem.remoteUrl;

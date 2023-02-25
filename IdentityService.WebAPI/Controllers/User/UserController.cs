@@ -69,17 +69,6 @@ namespace IdentityService.WebAPI.Controllers.User
             return Ok("Your user name has changed");
         }
         [HttpPost]
-        public async Task<ActionResult> SendEmailToken()
-        {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
-            if(await domainService.SendEmailTokenAsync(user))
-            {
-                return Ok();
-            };
-            return BadRequest();
-        }
-        [HttpPost]
         public async Task<ActionResult> SendConfirmationEmail()
         {
             Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -106,6 +95,28 @@ namespace IdentityService.WebAPI.Controllers.User
             {
                 return BadRequest("Failed to confirm the email address");
             }
+        }
+        [HttpPost]
+        public async Task<ActionResult> SendEmailToken()
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if (await domainService.SendEmailTokenAsync(user))
+            {
+                return Ok();
+            };
+            return BadRequest();
+        }
+        [HttpPost]
+        public async Task<ActionResult> CheckEmailToken(string token)
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await repository.FindByIdAsync(userId);
+            if(await repository.VerifyEmailTokenAsync(user, token))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }

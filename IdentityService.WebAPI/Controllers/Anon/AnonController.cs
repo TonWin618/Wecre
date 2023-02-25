@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
+using System.Security.Claims;
 
 namespace IdentityService.WebAPI.Controllers.Anon;
 

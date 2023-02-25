@@ -1,25 +1,21 @@
+using Common.Initializer;
 using Common.JWT;
 using IdentityService.Domain;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Configuration;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-IConfiguration configuration = builder.Configuration;
+builder.ConfigureDbConfiguration();
+builder.ConfigureExtraServices();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IIdRepository,IdRepository>();
-builder.Services.AddLogging();
 builder.Services.AddScoped<IEmailSender, MockEmailSender>();
 builder.Services.AddScoped<IdDomainService>();
 
@@ -27,22 +23,6 @@ builder.Services.AddDbContext<IdDbContext>(opt =>
 {
     string connStr = Environment.GetEnvironmentVariable("DefaultDB:ConnStr");
     opt.UseNpgsql(connStr);
-});
-
-var jwtOpt = new JWTOptions { Issuer = "issusr", Audience = "audience", Key = "dnbsauihduibhcjbiugwydvwgdkhjn", ExpireSeconds = 3153600 };
-builder.Services.AddSingleton(jwtOpt);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
-{
-    x.TokenValidationParameters = new()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtOpt.Issuer,
-        ValidAudience = jwtOpt.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpt.Key))
-    };
 });
 
 IdentityBuilder idBuilder = builder.Services.AddIdentityCore<User>(options =>
@@ -66,35 +46,6 @@ idBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<User>>();
-
-builder.Services.Configure<SwaggerGenOptions>(c =>
-{
-    c.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
-    {
-        Description = "Authorization header. \r\nExample: 'Bearer 12345abcdef'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Authorization"
-    }); ;
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Authorization"
-                },
-                Scheme = "oauth2",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
-});
 
 var app = builder.Build();
 

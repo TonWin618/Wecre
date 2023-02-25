@@ -9,21 +9,35 @@ namespace FileService.Infrastructure.Services;
 
 public class TencentStorageClient:IStorageClient
 {
-    private readonly IOptionsSnapshot<TencentStorageOptions> options;
+    private IOptionsSnapshot<TencentStorageOptions> options;
     private CosXml cosXml;
-    public TencentStorageClient(IOptionsSnapshot<TencentStorageOptions> options, CosXml cosXml)
+    private QCloudCredentialProvider provider;
+    public TencentStorageClient(IOptionsSnapshot<TencentStorageOptions> options)
     {
         this.options = options;
-        this.cosXml = cosXml;
+        CosXmlConfig config = new CosXmlConfig.Builder()
+            .SetRegion(options.Value.Region).Build();
+        this.provider = new DefaultQCloudCredentialProvider(options.Value.SecretId, options.Value.SecretKey, 600);
+        this.cosXml = new CosXmlServer(config, provider);
     }
 
     public StorageType StorageType => StorageType.Public;
 
-    public async Task<Uri> SaveAsync(string key, Stream content, CancellationToken cancellationToken = default)
+    public async Task<Uri?> SaveAsync(string key, Stream content, CancellationToken cancellationToken = default)
     {
-        PutObjectRequest request = new PutObjectRequest(options.Value.BucketName, key, content);
-        PutObjectResult result = cosXml.PutObject(request);
-        string url = options.Value.UrlRoot + key;
-        return new Uri(url);
+        try
+        {
+            string bucket = options.Value.BucketName;
+            PutObjectRequest request = new PutObjectRequest(options.Value.BucketName, key, content);
+            PutObjectResult result = cosXml.PutObject(request);
+            string url = options.Value.UrlRoot + key;
+
+            Console.WriteLine($"{result.eTag}");
+            return new Uri(url);
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return null;
+        }
     }
 }

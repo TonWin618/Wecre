@@ -1,4 +1,5 @@
 ﻿using FileService.Domain;
+using FileService.Domain.Entities;
 using FileService.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,11 +36,15 @@ namespace FileService.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Uri>> Upload([FromForm]UploadRequest req, CancellationToken cancellationToken = default)
         {
-            var file = req.File;
-            string fileName = file.FileName;
+            IFormFile? file = req.File;
+            string extension = Path.GetExtension(file.FileName);
+            UploadItem uploadItem;
             using Stream stream = file.OpenReadStream();
-            var uploadItem = await domainService.UpLoadAsync(stream, fileName,cancellationToken);
-            dbContext.Add(uploadItem);
+            {
+                uploadItem = await domainService.UpLoadAsync(stream, extension, cancellationToken);
+            }
+            await dbContext.AddAsync(uploadItem);
+            await dbContext.SaveChangesAsync();
             return uploadItem.remoteUrl;
         }
     }

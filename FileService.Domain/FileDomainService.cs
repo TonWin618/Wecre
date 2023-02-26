@@ -18,7 +18,6 @@ public class FileDomainService
     public async Task<FileItem> UpLoadAsync(FileIdentifier fileIdentifier,
         Stream stream, CancellationToken cancellationToken)
     {
-        //fileIdentifier = new(userName,projectName,versionName,fileName)
         string hash = HashHelper.ComputeSha256Hash(stream);
         long fileSize = stream.Length;
         string key = $"{fileIdentifier.UserName}/{fileIdentifier.ProjectName}/{fileIdentifier.FileType.ToString()}/{fileIdentifier.VersionName}/{fileIdentifier.FileName}";

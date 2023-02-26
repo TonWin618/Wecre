@@ -39,7 +39,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
         [Authorize]
         public async Task<ActionResult> CreateProject(CreateProjectRequest req)
         {
-            ProjectItem projectItem = ProjectItem.Create()
+            ProjectItem projectItem = ProjectItem.Create();
         }
 
         [HttpPut]

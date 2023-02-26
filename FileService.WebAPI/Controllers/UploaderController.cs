@@ -43,21 +43,7 @@ namespace FileService.WebAPI.Controllers
         public async Task<ActionResult<Uri>> Upload([FromForm]UploadRequest req, CancellationToken cancellationToken = default)
         {
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            FileType fileType = FileType.Null;
-            foreach(FileType type in Enum.GetValues(typeof(FileType)))
-            {
-                if(req.FileType == type.ToString())
-                {
-                    fileType = type;
-                    break;
-                };
-            }
-            if(fileType== FileType.Null)
-            {
-                return BadRequest();
-            }
-            FileIdentifier fileIdentifier = new(userName, req.ProjectName, fileType, req.VersionName, req.File.FileName);
+            FileIdentifier fileIdentifier = new(userName, req.ProjectName, req.FileType, req.VersionName, req.File.FileName);
             using Stream stream = req.File.OpenReadStream();
             FileItem fileItem = await domainService.UpLoadAsync(fileIdentifier, stream, cancellationToken);
             await dbContext.AddAsync(fileItem);

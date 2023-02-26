@@ -67,7 +67,7 @@ public class IdDomainService
     {
         var roles = await repository.GetRolesAsync(user);
         List<Claim> claims = new List<Claim>();
-        claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()));
+        claims.Add(new Claim(ClaimTypes.NameIdentifier,user.UserName!));
         foreach(string role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));

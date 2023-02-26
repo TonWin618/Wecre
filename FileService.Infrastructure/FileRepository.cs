@@ -11,9 +11,10 @@ public class FileRepository:IFileRepository
     {
         this.dbContext = dbContext;
     }
-    public async Task<UploadItem> FindFileAsync(long fileSize, string sha256Hash)
+
+    public async Task<FileItem> FindFileAsync(FileIdentifier fileIdentifier)
     {
-        return await dbContext.UploadItems.FirstOrDefaultAsync(
-            u => u.FileSizeInBytes == fileSize && u.FileSHA256Hash == sha256Hash);
+        return await dbContext.FileItems.FirstOrDefaultAsync(
+            u => u.FileIdentifier == fileIdentifier);
     }
 }

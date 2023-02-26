@@ -8,7 +8,6 @@ public interface IIdRepository
     Task<IdentityResult> CreateUserAsync(User user,string password);//Create a User
     Task<User?> FindByNameAsync(string userName);//Get a user by email address
     Task<User?> FindByEmailAsync(string email);//Get a user by username
-    Task<User?> FindByIdAsync(Guid id);
     Task<bool> CheckPasswordAsync(User user, string password);//Check password
     Task<bool> IsLockedOutAsync(User user);//
     Task<IdentityResult> AccessFailedAsync(User user); //Log a failed login

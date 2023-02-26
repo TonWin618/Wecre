@@ -1,12 +1,16 @@
 ﻿using FileService.Domain;
 using FileService.Domain.Entities;
 using FileService.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class UploaderController : ControllerBase
     {
         private readonly FileDbContext dbContext;
@@ -21,28 +25,63 @@ namespace FileService.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<FileExistsResponse> FileExists(long fileSize,string sha256Hash)
+        public async Task<FileExistsResponse> FileExists(FileIdentifier fileIdentifier)
         {
-            var item = await repository.FindFileAsync(fileSize, sha256Hash);
+            var item = await repository.FindFileAsync(fileIdentifier);
             if(item == null)
             {
                 return new FileExistsResponse(false, null);
             }
             else
             {
-                return new FileExistsResponse(true, item.remoteUrl);
+                return new FileExistsResponse(true, item.RemoteUrl);
             }
         }
 
+        //TODO: returned messages
         [HttpPost]
         public async Task<ActionResult<Uri>> Upload([FromForm]UploadRequest req, CancellationToken cancellationToken = default)
         {
-            string extension = Path.GetExtension(req.File.FileName);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            FileType fileType = FileType.Null;
+            foreach(FileType type in Enum.GetValues(typeof(FileType)))
+            {
+                if(req.FileType == type.ToString())
+                {
+                    fileType = type;
+                    break;
+                };
+            }
+            if(fileType== FileType.Null)
+            {
+                return BadRequest();
+            }
+            FileIdentifier fileIdentifier = new(userName, req.ProjectName, fileType, req.VersionName, req.File.FileName);
             using Stream stream = req.File.OpenReadStream();
-            UploadItem uploadItem = await domainService.UpLoadAsync(stream, req.FileNameWithoutExtension, extension, cancellationToken);
-            await dbContext.AddAsync(uploadItem);
+            FileItem fileItem = await domainService.UpLoadAsync(fileIdentifier, stream, cancellationToken);
+            await dbContext.AddAsync(fileItem);
             await dbContext.SaveChangesAsync();
-            return uploadItem.remoteUrl;
+            return fileItem.RemoteUrl;
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult> ChangeFileName(ChangeFileNameRequest req)
+        //{
+        //    Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //    UploadItem item = await repository.FindFileAsync(req.fileSize, req.sha256Hash);
+        //    if(null == item)
+        //    {
+        //        return NotFound("target file not found");
+        //    }
+        //    if (item.UserId != userId)
+        //    {
+        //        return Unauthorized("you are not the owner of this file");
+        //    }
+        //    //TODO: Data validation
+        //    item.ChangeFileName(req.newFileName);
+        //    await dbContext.SaveChangesAsync();
+        //    return Ok("filename changed");
+        //}
     }
 }

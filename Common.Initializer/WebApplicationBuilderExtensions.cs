@@ -1,7 +1,6 @@
 ﻿using Common.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -16,11 +15,13 @@ public static class WebApplicationBuilderExtensions
 {
     public static void ConfigureDbConfiguration(this WebApplicationBuilder builder)
     {
+#pragma warning disable ASP0013 // Suggest switching from using Configure methods to WebApplicationBuilder.Configuration
         builder.Host.ConfigureAppConfiguration((hostCtx, configBuilder) =>
         {
-            string connStr = builder.Configuration.GetValue<string>("DefaultDB:ConnStr");
+            string? connStr = builder.Configuration.GetValue<string>("DefaultDB:ConnStr");
             configBuilder.AddDbConfiguration(() => new NpgsqlConnection(connStr), reloadOnChange: true, tableName:"Configurations", reloadInterval: TimeSpan.FromSeconds(5));
         });
+#pragma warning restore ASP0013 // Suggest switching from using Configure methods to WebApplicationBuilder.Configuration
     }
 
     public static void ConfigureExtraServices(this WebApplicationBuilder builder)
@@ -30,8 +31,7 @@ public static class WebApplicationBuilderExtensions
         
         services.AddAuthorization();
         services.AddAuthentication();
-        JWTOptions jwtOpt = configuration.GetSection("JWT").Get<JWTOptions>();
-        //JWTOptions jwtOpt = new JWTOptions { Issuer = "my", Audience = "my", Key = "12312rshaijsaja912hu21nusjak", ExpireSeconds = 31536000 };
+        JWTOptions? jwtOpt = configuration.GetSection("JWT").Get<JWTOptions>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
         {
             x.TokenValidationParameters = new()

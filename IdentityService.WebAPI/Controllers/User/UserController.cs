@@ -22,9 +22,9 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> ChangeMyPassword(ChangeMyPasswordRequest req)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
-            if(!await repository.VerifyEmailTokenAsync(user, req.token))
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
+            if (!await repository.VerifyEmailTokenAsync(user, req.token))
             {
                 return BadRequest("Token invalid");
             }
@@ -37,8 +37,8 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> ChangeMyUserName(ChangeMyUserNameRequest req)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
             if (!await repository.VerifyEmailTokenAsync(user, req.token))
             {
                 return BadRequest("Token invalid");
@@ -56,8 +56,8 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> ChangeMyEmail(ChangeMyEmailRequest req)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
             if (!await repository.VerifyEmailTokenAsync(user, req.token))
             {
                 return BadRequest("Token invalid");
@@ -71,8 +71,8 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> SendConfirmationEmail()
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
             if (await domainService.SendEmailConfirmTokenAsync(user))
             {
                 return Ok("Confirmation email was sent successfully");
@@ -85,8 +85,8 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> ConfirmEmailAddress(ConfirmEmailRequest req)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
             if (IdentityResult.Success == await repository.VerifyConfirmEmailTokenAsync(user,req.token))
             {
                 return Ok("The email address has been confirmed");
@@ -99,8 +99,8 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> SendEmailToken()
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
             if (await domainService.SendEmailTokenAsync(user))
             {
                 return Ok();
@@ -110,9 +110,9 @@ namespace IdentityService.WebAPI.Controllers.User
         [HttpPost]
         public async Task<ActionResult> CheckEmailToken(string token)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await repository.FindByIdAsync(userId);
-            if(await repository.VerifyEmailTokenAsync(user, token))
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await repository.FindByNameAsync(userName);
+            if (await repository.VerifyEmailTokenAsync(user, token))
             {
                 return Ok();
             }

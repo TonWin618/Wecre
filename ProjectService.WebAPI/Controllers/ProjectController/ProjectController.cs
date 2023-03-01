@@ -19,7 +19,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
         [AllowAnonymous]
         public async Task<ActionResult<ProjectItem>> GetProject(string userName,string projectName)
         {
-            ProjectItem? project = await dbContext.projectItems.SingleOrDefaultAsync(e => e.UserName == userName && e.Name == projectName);
+            ProjectItem? project = await dbContext.projectItems.SingleOrDefaultAsync(e => e.UserName == userName && e.ProjectName == projectName);
             if(projectName== null) 
             {
                 return NotFound();

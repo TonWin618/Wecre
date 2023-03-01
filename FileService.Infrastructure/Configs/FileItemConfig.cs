@@ -7,17 +7,15 @@ public class FileItemConfig : IEntityTypeConfiguration<FileItem>
 {
     public void Configure(EntityTypeBuilder<FileItem> builder)
     {
-        builder.ToTable("T_FileItems");
         builder.HasKey(e => e.Id).IsClustered(false);
-        builder.OwnsOne(p => p.FileIdentifier
-        //    nb =>
-        //{
-        //    nb.Property(x => x.UserName).HasMaxLength(32).IsUnicode(false);
-        //    nb.Property(x => x.ProjectName).HasMaxLength(64).IsUnicode(false);
-        //    nb.Property(x => x.FileType).HasMaxLength(64).IsUnicode(false);
-        //    nb.Property(x => x.VersionName).HasMaxLength(64).IsUnicode(false);
-        //    nb.Property(x => x.FileName).HasMaxLength(256).IsUnicode(true);
-        );
+        builder.OwnsOne(p => p.FileIdentifier, nb =>
+        {
+            nb.Property(x => x.UserName).IsRequired().HasMaxLength(32).IsUnicode(false).HasColumnName("UserName");
+            nb.Property(x => x.ProjectName).IsRequired().HasMaxLength(256).IsUnicode(false).HasColumnName("ProjectName");
+            nb.Property(x => x.FileType).IsRequired().HasMaxLength(64).IsUnicode(false).HasColumnName("FileType");
+            nb.Property(x => x.VersionName).IsRequired().HasMaxLength(256).IsUnicode(false).HasColumnName("VersionName");
+            nb.Property(x => x.FileName).IsRequired().HasMaxLength(256).IsUnicode(true).HasColumnName("FileName");
+        });
         builder.Property(e => e.FileSHA256Hash).HasMaxLength(64).IsUnicode(false);
         builder.HasIndex(e => new { e.FileSHA256Hash, e.FileSizeInBytes });
     }

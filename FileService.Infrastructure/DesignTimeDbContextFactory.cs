@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace IdentityService.Infrastructure;
 
-public class DesignTimeDbContextFactory:IDesignTimeDbContextFactory<FileDbContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<FileDbContext>
 {
     public FileDbContext CreateDbContext(string[] args)
     {

@@ -17,4 +17,9 @@
     <ProjectReference Include="..\ProjectService.Infrasturcture\ProjectService.Infrasturcture.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\FirmwareVersionController\" />
+    <Folder Include="Controllers\ModelVersionController\" />
+  </ItemGroup>
+
 </Project>

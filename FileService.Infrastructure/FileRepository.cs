@@ -14,7 +14,8 @@ public class FileRepository:IFileRepository
 
     public async Task<FileItem> FindFileAsync(FileIdentifier fileIdentifier)
     {
-        return await dbContext.FileItems.FirstOrDefaultAsync(
-            u => u.FileIdentifier == fileIdentifier);
+        return null;
+        //return await dbContext.FileItems.FirstOrDefaultAsync(
+        //    u => u.FileIdentifier == fileIdentifier);
     }
 }

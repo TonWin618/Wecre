@@ -37,7 +37,9 @@ namespace FileService.Infrastructure.Migrations
 
                     b.Property<string>("FileSHA256Hash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<long>("FileSizeInBytes")
                         .HasColumnType("bigint");
@@ -46,37 +48,55 @@ namespace FileService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("FileSHA256Hash", "FileSizeInBytes");
 
                     b.ToTable("FileItems");
                 });
 
             modelBuilder.Entity("FileService.Domain.Entities.FileItem", b =>
                 {
-                    b.OwnsOne("FileService.Domain.Entities.FileIdentifier", "FileIdentifier", b1 =>
+                    b.OwnsOne("FileService.Domain.FileIdentifier", "FileIdentifier", b1 =>
                         {
                             b1.Property<Guid>("FileItemId")
                                 .HasColumnType("uuid");
 
                             b1.Property<string>("FileName")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(256)
+                                .IsUnicode(true)
+                                .HasColumnType("character varying(256)")
+                                .HasColumnName("FileName");
 
                             b1.Property<string>("FileType")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(64)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(64)")
+                                .HasColumnName("FileType");
 
                             b1.Property<string>("ProjectName")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(256)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(256)")
+                                .HasColumnName("ProjectName");
 
                             b1.Property<string>("UserName")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(32)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(32)")
+                                .HasColumnName("UserName");
 
                             b1.Property<string>("VersionName")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(256)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(256)")
+                                .HasColumnName("VersionName");
 
                             b1.HasKey("FileItemId");
 

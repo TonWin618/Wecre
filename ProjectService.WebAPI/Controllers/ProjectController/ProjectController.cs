@@ -17,9 +17,9 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<ProjectItem>> GetProject(string userName,string projectName)
+        public async Task<ActionResult<Project>> GetProject(string userName,string projectName)
         {
-            ProjectItem? project = await dbContext.projectItems.SingleOrDefaultAsync(e => e.UserName == userName && e.ProjectName == projectName);
+            Project? project = await dbContext.Projects.SingleOrDefaultAsync(e => e.UserName == userName && e.Name == projectName);
             if(projectName== null) 
             {
                 return NotFound();
@@ -29,9 +29,9 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<ProjectItem[]>> GetProjects(string userName)
+        public async Task<ActionResult<Project[]>> GetProjects(string userName)
         {
-            ProjectItem[]? projects = await dbContext.projectItems.Where(e => e.UserName == userName).ToArrayAsync();
+            Project[]? projects = await dbContext.Projects.Where(e => e.UserName == userName).ToArrayAsync();
             return projects;
         }
 

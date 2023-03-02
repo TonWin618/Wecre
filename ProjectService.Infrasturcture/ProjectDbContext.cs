@@ -4,8 +4,10 @@ using ProjectService.Domain.Entities;
 namespace ProjectService.Infrasturcture;
 public class ProjectDbContext:DbContext
 {
-    public DbSet<ProjectItem> projectItems { get;private set; }
-    public DbSet<VersionItem> versionItems { get;private set; }
+    public DbSet<Project> Projects { get;private set; }
+    public DbSet<ProjectVersion> ProjectVersions { get;private set; }
+    public DbSet<FirmwareVerision> FirmwareVerisions { get;private set; }
+    public DbSet<ModelVersion> ModelVersions { get;private set; }
     public ProjectDbContext(DbContextOptions<ProjectDbContext> options) : base(options)
     {
 

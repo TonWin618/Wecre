@@ -8,12 +8,13 @@ public class ProjectVersion
     public DateTime CreationTime { get; private set; }
     public string? Description { get; private set; }
     public long TotalDownloads { get; private set; }
-    public FirmwareVerision? FirmwareVersions { get; private set; }
-    public ModelVersion? ModelVersions { get; private set; }
+    public FirmwareVerision? FirmwareVersion { get; private set; }
+    public ModelVersion? ModelVersion { get; private set; }
+    private ProjectVersion() { }
     public static ProjectVersion Create(Project project , string name, string description,
         FirmwareVerision firmwareVersion, ModelVersion modelVersion)
     {
-        ProjectVersion versionItem = new()
+        ProjectVersion version = new()
         {
             Id = Guid.NewGuid(),
             Project= project,
@@ -21,10 +22,10 @@ public class ProjectVersion
             CreationTime= DateTime.UtcNow,
             Description = description,
             TotalDownloads= 0,
-            FirmwareVersions = firmwareVersion,
-            ModelVersions = modelVersion
+            FirmwareVersion = firmwareVersion,
+            ModelVersion = modelVersion
         };
-        return versionItem;
+        return version;
     }
 
     public ProjectVersion ChangeDescription(string description)

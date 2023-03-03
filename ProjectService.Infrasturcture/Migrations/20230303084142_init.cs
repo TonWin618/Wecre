@@ -21,7 +21,7 @@ namespace ProjectService.Infrasturcture.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Tags = table.Column<string>(type: "text", nullable: true),
-                    ReadmeUrl = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReadmeFiles = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -82,20 +82,20 @@ namespace ProjectService.Infrasturcture.Migrations
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     TotalDownloads = table.Column<long>(type: "bigint", nullable: false),
-                    FirmwareVersionsId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ModelVersionsId = table.Column<Guid>(type: "uuid", nullable: true)
+                    FirmwareVersionId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModelVersionId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjectVersions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectVersions_FirmwareVerisions_FirmwareVersionsId",
-                        column: x => x.FirmwareVersionsId,
+                        name: "FK_ProjectVersions_FirmwareVerisions_FirmwareVersionId",
+                        column: x => x.FirmwareVersionId,
                         principalTable: "FirmwareVerisions",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProjectVersions_ModelVersions_ModelVersionsId",
-                        column: x => x.ModelVersionsId,
+                        name: "FK_ProjectVersions_ModelVersions_ModelVersionId",
+                        column: x => x.ModelVersionId,
                         principalTable: "ModelVersions",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -122,14 +122,14 @@ namespace ProjectService.Infrasturcture.Migrations
                 columns: new[] { "UserName", "Name" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectVersions_FirmwareVersionsId",
+                name: "IX_ProjectVersions_FirmwareVersionId",
                 table: "ProjectVersions",
-                column: "FirmwareVersionsId");
+                column: "FirmwareVersionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectVersions_ModelVersionsId",
+                name: "IX_ProjectVersions_ModelVersionId",
                 table: "ProjectVersions",
-                column: "ModelVersionsId");
+                column: "ModelVersionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectVersions_ProjectId",

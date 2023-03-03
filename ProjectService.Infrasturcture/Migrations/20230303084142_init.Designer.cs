@@ -13,7 +13,7 @@ using ProjectService.Infrasturcture;
 namespace ProjectService.Infrasturcture.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20230302151819_init")]
+    [Migration("20230303084142_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -96,8 +96,8 @@ namespace ProjectService.Infrasturcture.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ReadmeUrl")
-                        .HasColumnType("uuid");
+                    b.Property<List<Guid>>("ReadmeFiles")
+                        .HasColumnType("uuid[]");
 
                     b.Property<string>("Tags")
                         .HasColumnType("text");
@@ -129,10 +129,10 @@ namespace ProjectService.Infrasturcture.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("FirmwareVersionsId")
+                    b.Property<Guid?>("FirmwareVersionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ModelVersionsId")
+                    b.Property<Guid?>("ModelVersionId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -147,9 +147,9 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirmwareVersionsId");
+                    b.HasIndex("FirmwareVersionId");
 
-                    b.HasIndex("ModelVersionsId");
+                    b.HasIndex("ModelVersionId");
 
                     b.HasIndex("ProjectId");
 
@@ -180,13 +180,13 @@ namespace ProjectService.Infrasturcture.Migrations
 
             modelBuilder.Entity("ProjectService.Domain.Entities.ProjectVersion", b =>
                 {
-                    b.HasOne("ProjectService.Domain.Entities.FirmwareVerision", "FirmwareVersions")
+                    b.HasOne("ProjectService.Domain.Entities.FirmwareVerision", "FirmwareVersion")
                         .WithMany()
-                        .HasForeignKey("FirmwareVersionsId");
+                        .HasForeignKey("FirmwareVersionId");
 
-                    b.HasOne("ProjectService.Domain.Entities.ModelVersion", "ModelVersions")
+                    b.HasOne("ProjectService.Domain.Entities.ModelVersion", "ModelVersion")
                         .WithMany()
-                        .HasForeignKey("ModelVersionsId");
+                        .HasForeignKey("ModelVersionId");
 
                     b.HasOne("ProjectService.Domain.Entities.Project", "Project")
                         .WithMany("ProjectVersions")
@@ -194,9 +194,9 @@ namespace ProjectService.Infrasturcture.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FirmwareVersions");
+                    b.Navigation("FirmwareVersion");
 
-                    b.Navigation("ModelVersions");
+                    b.Navigation("ModelVersion");
 
                     b.Navigation("Project");
                 });

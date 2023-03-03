@@ -1,12 +1,23 @@
 using Common.Initializer;
+using Microsoft.EntityFrameworkCore;
+using ProjectService.Domain;
+using ProjectService.Infrasturcture;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
 builder.ConfigureDbConfiguration();
 builder.ConfigureExtraServices();
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ProjectDomainService>();
+builder.Services.AddDbContext<ProjectDbContext>(opt =>
+{
+    string connStr = Environment.GetEnvironmentVariable("DefaultDB:ConnStr");
+    opt.UseNpgsql(connStr);
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

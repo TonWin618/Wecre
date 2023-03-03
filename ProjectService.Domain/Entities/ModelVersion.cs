@@ -8,13 +8,13 @@ public class ModelVersion
     public List<Guid> Files { get; private set; }
     public long Downloads { get; private set; }
     private ModelVersion() { }
-    public static ModelVersion Create(string versionName, Project project, List<Guid>? files)
+    public static ModelVersion Create(string versionName, Project project, List<Guid> files)
     {
-        ModelVersion modelVersionItem = new();
-        modelVersionItem.Id = Guid.NewGuid();
-        modelVersionItem.Project = project;
-        modelVersionItem.Name = versionName;
-        modelVersionItem.Files = files;
-        return modelVersionItem;
+        ModelVersion modelVersion = new();
+        modelVersion.Id = Guid.NewGuid();
+        modelVersion.Project = project;
+        modelVersion.Name = versionName;
+        modelVersion.Files = files;
+        return modelVersion;
     }
 }

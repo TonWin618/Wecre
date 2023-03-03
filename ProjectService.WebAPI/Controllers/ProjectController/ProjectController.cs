@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
 using ProjectService.Infrasturcture;
+using System.Security.Claims;
 
 namespace ProjectService.WebAPI.Controllers.ProjectController
 {
@@ -12,8 +13,13 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
     public class ProjectController : ControllerBase
     {
         private readonly ProjectDbContext dbContext;
-        private readonly ProjectRepository repository;
-        private readonly ProjectDomainService domainService;
+        //private readonly ProjectRepository repository;
+        //private readonly ProjectDomainService domainService;
+        public ProjectController(ProjectDbContext dbContext)
+        {
+
+            this.dbContext = dbContext;
+        }
 
         [HttpGet]
         [AllowAnonymous]
@@ -39,7 +45,12 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
         [Authorize]
         public async Task<ActionResult> CreateProject(CreateProjectRequest req)
         {
-            return NotFound();
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var project = Project.Create(userName: userName, Name: req.Name, description: req.Description, 
+                tags: req.Tags, readmeFiles: req.ReadmeFiles);
+            await dbContext.Projects.AddAsync(project);
+            await dbContext.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPut]

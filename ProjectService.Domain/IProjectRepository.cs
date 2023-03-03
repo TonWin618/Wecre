@@ -9,12 +9,12 @@ public interface IProjectRepository
     public Task UpdateProjectAsync();
     public Task DeleteProjectAsync();
 
-    //Version
-    public Task GetVersionAsync();
-    public Task GetVersionsByUserNameAsync();
-    public Task CreateVersionAsync();
-    public Task UpdateVersionAsync();
-    public Task DeleteVersionAsync();
+    //Project Version
+    public Task GetProjectVersionAsync();
+    public Task GetProjectVersionsByUserNameAsync();
+    public Task CreateProjectVersionAsync();
+    public Task UpdateProjectVersionAsync();
+    public Task DeleteProjectVersionAsync();
 
     //Firmware Vesion
     public Task GetFirmwareVersionAsync();

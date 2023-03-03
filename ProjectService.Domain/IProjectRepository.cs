@@ -1,32 +1,23 @@
-﻿namespace ProjectService.Domain;
+﻿using ProjectService.Domain.Entities;
+
+namespace ProjectService.Domain;
 
 public interface IProjectRepository
 {
-    //Project
-    public Task GetProjectAsync();
-    public Task GetProjectsByUserNameAsync();
-    public Task CreateProjectAsync();
-    public Task UpdateProjectAsync();
-    public Task DeleteProjectAsync();
+    public Task<Project?> GetProjectAsync(string userName, string projectName);
+    public Task<Project[]?> GetProjectsByUserNameAsync(string userName);
+    public Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags, List<Guid> readmeFiles);
+    public Task CreateProjectVersionAsync(Project project, string name, string description,
+        FirmwareVersion firmwareVersion, ModelVersion modelVersion);
+    public Task CreateFirmwareVersionAsync(string versionName, Project project, List<Guid> files);
+    public Task CreateModelVersionAsync(string versionName, Project project, List<Guid> files);
 
-    //Project Version
-    public Task GetProjectVersionAsync();
-    public Task GetProjectVersionsByUserNameAsync();
-    public Task CreateProjectVersionAsync();
-    public Task UpdateProjectVersionAsync();
-    public Task DeleteProjectVersionAsync();
+    public Task<ProjectVersion?> GetProjectVersionAsync();
+    public Task<FirmwareVersion?> GetFirmwareVerisionAsync();
+    public Task<ModelVersion?> GetModelVersionAsync();
 
-    //Firmware Vesion
-    public Task GetFirmwareVersionAsync();
-    public Task GetFirmwareVersionsByUserNameAsync();
-    public Task CreateFirmwareVersionAsync();
-    public Task UpdateFirmwareVersionAsync();
-    public Task DeleteFirmwareVersionAsync();
-
-    //Model Version
-    public Task GetModelVersionAsync();
-    public Task GetModelVersionsByUserNameAsync();
-    public Task CreateModelVersionAsync();
-    public Task UpdateModelVersionAsync();
-    public Task DeleteModelVersionAsync();
+    public void RemoveProject(Project project);
+    //internal void RemoveProjectVersion(ProjectVersion projectVersion);
+    //internal void RemoveFirmwareVersion(FirmwareVersion firmwareVersion);
+    //internal void RemoveModelVersion(ModelVersion modelVersion);
 }

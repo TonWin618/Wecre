@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
 using ProjectService.Infrasturcture;
@@ -8,63 +9,99 @@ using System.Security.Claims;
 
 namespace ProjectService.WebAPI.Controllers.ProjectController
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly ProjectDbContext dbContext;
-        //private readonly ProjectRepository repository;
-        //private readonly ProjectDomainService domainService;
-        public ProjectController(ProjectDbContext dbContext)
+        private readonly IProjectRepository repository;
+        private readonly ProjectDomainService domainService;
+        public ProjectController(ProjectDbContext dbContext, IProjectRepository repository, ProjectDomainService domainService)
         {
 
             this.dbContext = dbContext;
+            this.repository = repository;
+            this.domainService = domainService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<Project>> GetProject(string userName,string projectName)
+        [Route("{userName}/{projectName}")]
+        public async Task<ActionResult<Project>> GetProject(string userName, string projectName)
         {
-            Project? project = await dbContext.Projects.SingleOrDefaultAsync(e => e.UserName == userName && e.Name == projectName);
-            if(projectName== null) 
+            Project? project = await repository.GetProjectAsync(userName, projectName);
+            if(project == null) 
             {
                 return NotFound();
             }
+            //TODO: return view built on Project
             return project;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<Project[]>> GetProjects(string userName)
-        {
-            Project[]? projects = await dbContext.Projects.Where(e => e.UserName == userName).ToArrayAsync();
-            return projects;
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> CreateProject(CreateProjectRequest req)
+        [Route("{userName}/{projectName}")]
+        public async Task<ActionResult> CreateProject(string userName, string projectName,
+            UpdateProjectRequest req)
         {
-            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var project = Project.Create(userName: userName, Name: req.Name, description: req.Description, 
-                tags: req.Tags, readmeFiles: req.ReadmeFiles);
-            await dbContext.Projects.AddAsync(project);
+            if(userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return Forbid("illegal request. ");
+            };
+            if(null != await repository.GetProjectAsync(userName, projectName))
+            {
+                return BadRequest("the target project already exists. ");
+            }
+            await repository.CreateProjectAsync(userName, projectName, req.Description, req.Tags, req.ReadmeFiles);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult> UpdateProject()
+        [Route("{userName}/{projectName}")]
+        public async Task<ActionResult> UpdateProject(string userName,string projectName,
+            UpdateProjectRequest req)
         {
-            return NotFound();
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound("illegal request. ");
+            };
+            Project? project = await repository.GetProjectAsync(userName,projectName);
+            if(project == null) { return NotFound(); }
+
+            project.ChangeDescription(req.Description);
+            project.ChangeTags(req.Tags);
+            project.ChangeReadmeFiles(req.ReadmeFiles);
+
+            dbContext.Update(project);
+            await dbContext.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpDelete]
         [Authorize]
-        public async Task<ActionResult> DeleteProject()
+        [Route("{userName}/{projectName}")]
+        public async Task<ActionResult> DeleteProject(string userName, string projectName)
         {
-            return NotFound();
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound("illegal request. ");
+            };
+            Project? project = await repository.GetProjectAsync(userName, projectName);
+            if (project == null) { return NotFound(); }
+            await domainService.DeleteProject(project);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{userName}")]
+        public async Task<ActionResult<Project[]?>> GetProjects(string userName)
+        {
+            //TODO: return view built on Project
+            return await repository.GetProjectsByUserNameAsync(userName); ;
         }
     }
 }

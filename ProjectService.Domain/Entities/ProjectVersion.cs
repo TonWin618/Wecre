@@ -8,11 +8,11 @@ public class ProjectVersion
     public DateTime CreationTime { get; private set; }
     public string? Description { get; private set; }
     public long TotalDownloads { get; private set; }
-    public FirmwareVerision? FirmwareVersion { get; private set; }
+    public FirmwareVersion? FirmwareVersion { get; private set; }
     public ModelVersion? ModelVersion { get; private set; }
     private ProjectVersion() { }
     public static ProjectVersion Create(Project project , string name, string description,
-        FirmwareVerision firmwareVersion, ModelVersion modelVersion)
+        FirmwareVersion firmwareVersion, ModelVersion modelVersion)
     {
         ProjectVersion version = new()
         {

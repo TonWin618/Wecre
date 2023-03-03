@@ -23,7 +23,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ProjectService.Domain.Entities.FirmwareVerision", b =>
+            modelBuilder.Entity("ProjectService.Domain.Entities.FirmwareVersion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,8 +96,8 @@ namespace ProjectService.Infrasturcture.Migrations
                     b.Property<List<Guid>>("ReadmeFiles")
                         .HasColumnType("uuid[]");
 
-                    b.Property<string>("Tags")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("Tags")
+                        .HasColumnType("text[]");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
@@ -153,7 +153,7 @@ namespace ProjectService.Infrasturcture.Migrations
                     b.ToTable("ProjectVersions");
                 });
 
-            modelBuilder.Entity("ProjectService.Domain.Entities.FirmwareVerision", b =>
+            modelBuilder.Entity("ProjectService.Domain.Entities.FirmwareVersion", b =>
                 {
                     b.HasOne("ProjectService.Domain.Entities.Project", "Project")
                         .WithMany("FirmwareVerisions")
@@ -177,7 +177,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
             modelBuilder.Entity("ProjectService.Domain.Entities.ProjectVersion", b =>
                 {
-                    b.HasOne("ProjectService.Domain.Entities.FirmwareVerision", "FirmwareVersion")
+                    b.HasOne("ProjectService.Domain.Entities.FirmwareVersion", "FirmwareVersion")
                         .WithMany()
                         .HasForeignKey("FirmwareVersionId");
 

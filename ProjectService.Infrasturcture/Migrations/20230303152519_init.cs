@@ -20,7 +20,7 @@ namespace ProjectService.Infrasturcture.Migrations
                     UserName = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Tags = table.Column<string>(type: "text", nullable: true),
+                    Tags = table.Column<List<string>>(type: "text[]", nullable: true),
                     ReadmeFiles = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

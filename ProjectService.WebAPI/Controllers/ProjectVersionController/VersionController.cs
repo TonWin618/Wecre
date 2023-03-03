@@ -9,28 +9,27 @@ namespace ProjectService.WebAPI.Controllers.VersionController
     {
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> GetVersion(string projectName, string version)
+        public async Task<ActionResult> GetProjectVersion(string projectName, string version)
         {
             return NotFound();
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> CreateVersion(CreateVersionRequest req)
+        public async Task<ActionResult> CreateProjectVersion(CreateVersionRequest req)
         {
             return NotFound();
         }
-
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult> UpdateVersion()
+        public async Task<ActionResult> UpdateProjectVersion()
         {
             return NotFound();
         }
 
         [HttpDelete]
         [Authorize]
-        public async Task<ActionResult> DeleteVersion()
+        public async Task<ActionResult> DeleteProjectVersion()
         {
             return NotFound();
         }

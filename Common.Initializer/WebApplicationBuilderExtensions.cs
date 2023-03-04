@@ -73,6 +73,16 @@ public static class WebApplicationBuilderExtensions
                 }
             });
         });
+        var corsOpt = configuration.GetSection("Cors").Get<CorsSettings>();
+        string[] urls = corsOpt.Origins;
+        services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => builder.WithOrigins(urls)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            }
+         );
         services.AddLogging();
         services.Configure<JWTOptions>(configuration.GetSection("JWT"));
     }

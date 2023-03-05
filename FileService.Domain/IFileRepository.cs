@@ -3,5 +3,5 @@
 namespace FileService.Domain;
 public interface IFileRepository
 {
-    Task<FileItem> FindFileAsync(FileIdentifier fileIdentifier);
+    Task<FileItem> FindFileAsync(string fileName, string hash);
 }

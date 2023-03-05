@@ -25,9 +25,9 @@ namespace FileService.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<FileExistsResponse> FileExists(FileIdentifier fileIdentifier)
+        public async Task<FileExistsResponse> FileExists(string fileName,string hash)
         {
-            var item = await repository.FindFileAsync(fileIdentifier);
+            var item = await repository.FindFileAsync(fileName,hash);
             if(item == null)
             {
                 return new FileExistsResponse(false, null);
@@ -40,34 +40,14 @@ namespace FileService.WebAPI.Controllers
 
         //TODO: returned messages
         [HttpPost]
-        public async Task<ActionResult<Uri>> Upload([FromForm]UploadRequest req, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Uri>> Upload(IFormFile file, string fileName, CancellationToken cancellationToken = default)
         {
-            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            FileIdentifier fileIdentifier = new(userName, req.ProjectName, req.FileType, req.VersionName, req.File.FileName);
-            using Stream stream = req.File.OpenReadStream();
-            FileItem fileItem = await domainService.UpLoadAsync(fileIdentifier, stream, cancellationToken);
+            //string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using Stream stream = file.OpenReadStream();
+            FileItem fileItem = await domainService.UpLoadAsync(fileName, stream, cancellationToken);
             await dbContext.AddAsync(fileItem);
             await dbContext.SaveChangesAsync();
             return fileItem.RemoteUrl;
         }
-
-        //[HttpPost]
-        //public async Task<ActionResult> ChangeFileName(ChangeFileNameRequest req)
-        //{
-        //    Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        //    UploadItem item = await repository.FindFileAsync(req.fileSize, req.sha256Hash);
-        //    if(null == item)
-        //    {
-        //        return NotFound("target file not found");
-        //    }
-        //    if (item.UserId != userId)
-        //    {
-        //        return Unauthorized("you are not the owner of this file");
-        //    }
-        //    //TODO: Data validation
-        //    item.ChangeFileName(req.newFileName);
-        //    await dbContext.SaveChangesAsync();
-        //    return Ok("filename changed");
-        //}
     }
 }

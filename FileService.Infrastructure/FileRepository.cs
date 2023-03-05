@@ -12,7 +12,7 @@ public class FileRepository:IFileRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<FileItem> FindFileAsync(FileIdentifier fileIdentifier)
+    public async Task<FileItem> FindFileAsync(string fileName,string hash)
     {
         return null;
         //return await dbContext.FileItems.FirstOrDefaultAsync(

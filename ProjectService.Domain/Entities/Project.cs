@@ -6,7 +6,7 @@ public class Project
     public string Name { get; private set; }
     public string? Description { get; private set; }
     public List<string>? Tags { get; private set; }
-    public List<Guid>? ReadmeFiles { get; private set; }
+    public List<ProjectFile>? ReadmeFiles { get; private set; }
     public IEnumerable<ProjectVersion>? ProjectVersions { get; private set; }
     public IEnumerable<ModelVersion>? ModelVersions { get; private set; }
     public IEnumerable<FirmwareVersion>? FirmwareVerisions { get; private set; }
@@ -14,7 +14,7 @@ public class Project
     public DateTime UpdateTime { get; private set; }
     private Project() { }
 
-    public static Project Create(string userName, string name, string? description, List<string>? tags, List<Guid> readmeFiles)
+    public static Project Create(string userName, string name, string? description, List<string>? tags, List<ProjectFile> readmeFiles)
     {
         Project project = new()
         {
@@ -42,7 +42,7 @@ public class Project
         return this;
     }
 
-    public Project ChangeReadmeFiles(List<Guid>? readmeFiles)
+    public Project ChangeReadmeFiles(List<ProjectFile>? readmeFiles)
     {
         this.ReadmeFiles = readmeFiles;
         return this;

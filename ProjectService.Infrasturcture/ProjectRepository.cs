@@ -13,19 +13,19 @@ public class ProjectRepository: IProjectRepository
         this.dbContext = dbContext;
     }
 
-    public async Task CreateFirmwareVersionAsync(string versionName, Project project, List<Guid> files)
+    public async Task CreateFirmwareVersionAsync(string versionName, Project project, List<ProjectFile> files)
     {
         var firmwareVersion = FirmwareVersion.Create(versionName, project, files);
         await dbContext.AddAsync(firmwareVersion);
     }
 
-    public async Task CreateModelVersionAsync(string versionName, Project project, List<Guid> files)
+    public async Task CreateModelVersionAsync(string versionName, Project project, List<ProjectFile> files)
     {
         var modelVersion = ModelVersion.Create(versionName, project, files);
         await dbContext.AddAsync(modelVersion);
     }
 
-    public async Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags, List<Guid> readmeFiles)
+    public async Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags, List<ProjectFile> readmeFiles)
     {
         var project = Project.Create(userName, name, description, tags, readmeFiles);
         await dbContext.AddAsync(project);

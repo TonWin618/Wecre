@@ -50,7 +50,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             {
                 return BadRequest("the target project already exists. ");
             }
-            await repository.CreateProjectAsync(userName, projectName, req.Description, req.Tags, req.ReadmeFiles);
+            await repository.CreateProjectAsync(userName, projectName, req.Description, req.Tags, null);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -70,7 +70,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
             project.ChangeDescription(req.Description);
             project.ChangeTags(req.Tags);
-            project.ChangeReadmeFiles(req.ReadmeFiles);
+            project.ChangeReadmeFiles(null);
 
             dbContext.Update(project);
             await dbContext.SaveChangesAsync();

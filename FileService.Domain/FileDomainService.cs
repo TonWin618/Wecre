@@ -30,6 +30,6 @@ public class FileDomainService
         Uri backupUrl = await backupStorage.SaveAsync(key, stream, cancellationToken);
         stream.Position = 0;
         Uri remoteUrl = await remoteStorage.SaveAsync(key, stream, cancellationToken);
-        return FileItem.Create(fileName, fileSize, hash, backupUrl, remoteUrl);
+        return FileItem.Create(fileSize, hash, backupUrl, remoteUrl);
     }
 }

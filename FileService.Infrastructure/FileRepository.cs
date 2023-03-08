@@ -12,10 +12,20 @@ public class FileRepository:IFileRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<FileItem> FindFileAsync(string fileName,string hash)
+    public async Task<FileItem?> FindFileAsync(string relativePath)
     {
-        return null;
-        //return await dbContext.FileItems.FirstOrDefaultAsync(
-        //    u => u.FileIdentifier == fileIdentifier);
+        return await dbContext.FileItems.FirstOrDefaultAsync(
+            u => u.RelativePath == relativePath);
+    }
+
+    public async Task<bool> RemoveFileAsync(string relativePath)
+    {
+        FileItem? file = await FindFileAsync(relativePath);
+        if (file == null)
+        {
+            return false;
+        }
+        dbContext.FileItems.Remove(file);
+        return true;
     }
 }

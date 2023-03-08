@@ -15,21 +15,46 @@ public class FileDomainService
         this.remoteStorage = storageClients.First(c => c.StorageType == StorageType.Public);
     }
 
-    public async Task<FileItem> UpLoadAsync(string fileName,
+    /// <summary>
+    /// upload a file, make sure the target file the filepath refer to does not exists before calling the method.
+    /// </summary>
+    /// <param name="relativePath"></param>
+    /// <param name="stream"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<FileItem> UpLoadAsync(string relativePath,
         Stream stream, CancellationToken cancellationToken)
     {
-        string hash = HashHelper.ComputeSha256Hash(stream);
         long fileSize = stream.Length;
-        string key = $"{hash}/{fileName}";
-        var oldUploadItem = await repository.FindFileAsync(fileName,hash);
+        var oldUploadItem = await repository.FindFileAsync(relativePath);
         if (oldUploadItem != null)
         {
             return oldUploadItem;
         }
+
         stream.Position = 0;
-        Uri backupUrl = await backupStorage.SaveAsync(key, stream, cancellationToken);
+        Uri backupUrl = await backupStorage.SaveAsync(relativePath, stream, cancellationToken);
         stream.Position = 0;
-        Uri remoteUrl = await remoteStorage.SaveAsync(key, stream, cancellationToken);
-        return FileItem.Create(fileSize, hash, backupUrl, remoteUrl);
+        Uri remoteUrl = await remoteStorage.SaveAsync(relativePath, stream, cancellationToken);
+
+        return FileItem.Create(relativePath, backupUrl, remoteUrl,fileSize);
+    }
+
+    /// <summary>
+    /// delete a file
+    /// </summary>
+    /// <param name="relativePath"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteFileAsync(string relativePath)
+    {
+        FileItem? fileItem = await repository.FindFileAsync(relativePath);
+        if(fileItem == null)
+        {
+            return false;
+        }
+        await repository.RemoveFileAsync(relativePath);
+        await backupStorage.RemoveAsync(fileItem.BackupUrl.ToString());
+        await remoteStorage.RemoveAsync(fileItem.RemoteUrl.ToString());
+        return true;
     }
 }

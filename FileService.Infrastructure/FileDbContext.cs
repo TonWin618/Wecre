@@ -1,6 +1,4 @@
-﻿using FileService.Domain;
-using FileService.Domain.Entities;
-using FileService.Infrastructure.Configs;
+﻿using FileService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FileService.Infrastructure;

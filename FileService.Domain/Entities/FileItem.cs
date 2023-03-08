@@ -2,22 +2,21 @@
 public class FileItem
 {
     public Guid Id { get; private set; }
-    public DateTime CreationTime { get;private set; }
-    public long FileSizeInBytes { get;private set; }
-    public string FileSHA256Hash { get; private set; }
+    public long FileSizeInBytes { get; private set; }
+    public string RelativePath { get; private set; }
     public Uri BackupUrl { get; private set; }
     public Uri RemoteUrl { get; private set; }
-    public static FileItem Create(long fileSizeInByte,  string fileSHA256Hash, 
-        Uri backupUrl, Uri remoteUrl)
+    private FileItem() { }
+    public static FileItem Create(string relativePath, 
+        Uri backupUrl, Uri remoteUrl, long fileSizeInBytes)
     {
         FileItem item = new FileItem()
         {
             Id = Guid.NewGuid(),
-            CreationTime = DateTime.UtcNow,
-            FileSHA256Hash = fileSHA256Hash,
-            FileSizeInBytes = fileSizeInByte,
-            BackupUrl= backupUrl,
-            RemoteUrl= remoteUrl
+            RelativePath = relativePath,
+            BackupUrl = backupUrl,
+            RemoteUrl= remoteUrl,
+            FileSizeInBytes= fileSizeInBytes
         };
         return item;
     }

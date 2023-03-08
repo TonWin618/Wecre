@@ -13,14 +13,20 @@ public class SMBStorageClient:IStorageClient
 
     public StorageType StorageType => StorageType.Backup;
 
-    public async Task<Uri> SaveAsync(string key, Stream content, CancellationToken cancellationToken = default)
+    public async Task<bool> RemoveAsync(string fullPath)
     {
-        if(key.StartsWith("/"))
+        if (File.Exists(fullPath))
         {
-            throw new ArgumentException(nameof(key));
+            return false;
         }
+        File.Delete(fullPath);
+        return true;
+    }
+
+    public async Task<Uri> SaveAsync(string relativePath, Stream content, CancellationToken cancellationToken = default)
+    {
         string workingDir = options.Value.WorkingDir;
-        string fullPath = Path.Combine(workingDir, key);
+        string fullPath = Path.Combine(workingDir, relativePath);
         string? fullDir = Path.GetDirectoryName(fullPath);
         if (!Directory.Exists(fullDir))
         {

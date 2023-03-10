@@ -66,5 +66,27 @@ public class ProjectRepository: IProjectRepository
     {
         dbContext.Projects.Remove(project);
     }
+
+    public async Task<ProjectFile> CreateFileAsync(ProjectFile file)
+    {
+       await dbContext.ProjectFiles.AddAsync(file);
+       return file;
+    }
+
+    public async Task<bool> DeleteFileAsync(ProjectFile file)
+    {
+        dbContext.ProjectFiles.Remove(file);
+        return true;
+    }
+
+    public async Task<ProjectFile?> FindFileAsync(string Url)
+    {
+        return await dbContext.ProjectFiles.SingleOrDefaultAsync(p => p.Url == Url);
+    }
+
+    public void RemoveProjectVersion(ProjectVersion projectVersion)
+    {
+        throw new NotImplementedException();
+    }
 }
  

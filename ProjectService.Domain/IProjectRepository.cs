@@ -21,7 +21,7 @@ public interface IProjectRepository
     Task<ModelVersion?> GetModelVersionAsync();
 
     void RemoveProject(Project project);
-    //internal void RemoveProjectVersion(ProjectVersion projectVersion);
+    void RemoveProjectVersion(ProjectVersion projectVersion);
     //internal void RemoveFirmwareVersion(FirmwareVersion firmwareVersion);
     //internal void RemoveModelVersion(ModelVersion modelVersion);
 }

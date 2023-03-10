@@ -10,6 +10,7 @@ builder.ConfigureDbConfiguration();
 builder.ConfigureExtraServices();
 builder.Services.AddControllers();
 
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ProjectDomainService>();
 builder.Services.AddDbContext<ProjectDbContext>(opt =>

@@ -101,5 +101,16 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             //TODO: return view built on Project
             return await repository.GetProjectsByUserNameAsync(userName); ;
         }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{username}/{projectName}/readme")]
+        public async Task<ActionResult> UpdateFiles(string username,string projectName,string description, IFormFile file)
+        {
+            string fullPath = $"{username}/{projectName}/{file.FileName}";
+            await domainService.CreateFileAsync(file.OpenReadStream(), fullPath, file.FileName, description);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

@@ -8,6 +8,7 @@ public class ProjectDbContext:DbContext
     public DbSet<ProjectVersion> ProjectVersions { get;private set; }
     public DbSet<FirmwareVersion> FirmwareVerisions { get;private set; }
     public DbSet<ModelVersion> ModelVersions { get;private set; }
+    public DbSet<ProjectFile> ProjectFiles { get;private set; }
     public ProjectDbContext(DbContextOptions<ProjectDbContext> options) : base(options)
     {
 

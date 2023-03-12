@@ -34,4 +34,15 @@ public class ProjectVersion
         return this;
     }
 
+    public ProjectVersion ChangeFirmwareVersion(FirmwareVersion firmwareVersion)
+    {
+        this.FirmwareVersion = firmwareVersion;
+        return this;
+    }
+
+    public ProjectVersion ChangeModelVersion(ModelVersion modelVersion)
+    {
+        this.ModelVersion = modelVersion;
+        return this;
+    }
 }

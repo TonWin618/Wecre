@@ -30,7 +30,7 @@ public class ProjectDomainService
         if (resp.IsSuccessStatusCode)
         {
             var projectFile = ProjectFile.Create(name: fileName, url: json.Url, sizeInBytes: json.FileSize, description: description);
-            return await repository.CreateFileAsync(projectFile);
+            return await repository.CreateProjectFileAsync(projectFile);
         }
         return null;
     }
@@ -40,8 +40,8 @@ public class ProjectDomainService
         Uri requestUrl = new(fileServerRoot, $"api/Uploader/RemoveFile?relativePath={relativePath}");
         var httpClient = httpClientFactory.CreateClient();
         await httpClient.GetFromJsonAsync<bool>(requestUrl, stoppingToken);
-        var file = await repository.FindFileAsync(relativePath);
-        await repository.DeleteFileAsync(file);
+        var file = await repository.FindProjectFileAsync(relativePath);
+        await repository.DeleteProjectFileAsync(file);
         return true;
     }
 
@@ -77,20 +77,20 @@ public class ProjectDomainService
         repository.RemoveProjectVersion(projectVersion);
     }
 
-    public void DeleteFirmwareVersion(FirmwareVersion firmwareVersion)
+    public async void DeleteFirmwareVersion(FirmwareVersion firmwareVersion)
     {
         foreach(var file in firmwareVersion.Files)
         {
-            RemoveFileAsync(file.Url);
+            await RemoveFileAsync(file.Url);
         }
         //repository.RemoveFirmwareVersion(firmwareVersion);
     }
 
-    public void DeleteModelVersion(ModelVersion modelVersion)
+    public async void DeleteModelVersion(ModelVersion modelVersion)
     {
         foreach (var file in modelVersion.Files)
         {
-            RemoveFileAsync(file.Url);
+            await RemoveFileAsync(file.Url);
         }
         //repository.RemoveModelVersion(modelVersion);
     }

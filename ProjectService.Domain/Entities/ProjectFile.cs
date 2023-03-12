@@ -8,6 +8,8 @@ public class ProjectFile
     public long SizeInBytes { get; private set; }
     public string? Description { get; private set; }
     public long Downloads { get; private set; }
+
+    private ProjectFile() { }
     public static ProjectFile Create(string name, string url, long sizeInBytes, string? description)
     {
         ProjectFile file = new ProjectFile();

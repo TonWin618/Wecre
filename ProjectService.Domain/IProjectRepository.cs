@@ -6,22 +6,24 @@ public interface IProjectRepository
 {
     Task<Project?> GetProjectAsync(string userName, string projectName);
     Task<Project[]?> GetProjectsByUserNameAsync(string userName);
+    Task<ProjectVersion?> GetProjectVersionAsync(string userName, string projectName, string versionName);
+    Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName);
+    Task<ModelVersion?> GetModelVersionAsync(string userName, string projectName, string versionName);
+
     Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags, List<ProjectFile> readmeFiles);
     Task CreateProjectVersionAsync(Project project, string name, string description,
         FirmwareVersion firmwareVersion, ModelVersion modelVersion);
     Task CreateFirmwareVersionAsync(string versionName, Project project, List<ProjectFile> files);
     Task CreateModelVersionAsync(string versionName, Project project, List<ProjectFile> files);
 
-    Task<ProjectFile> FindFileAsync(string Url);
-    Task<ProjectFile> CreateFileAsync(ProjectFile file);
-    Task<bool> DeleteFileAsync(ProjectFile file);
-
-    Task<ProjectVersion?> GetProjectVersionAsync();
-    Task<FirmwareVersion?> GetFirmwareVerisionAsync();
-    Task<ModelVersion?> GetModelVersionAsync();
 
     void RemoveProject(Project project);
     void RemoveProjectVersion(ProjectVersion projectVersion);
-    //internal void RemoveFirmwareVersion(FirmwareVersion firmwareVersion);
-    //internal void RemoveModelVersion(ModelVersion modelVersion);
+    void RemoveFirmwareVersion(FirmwareVersion firmwareVersion);
+    void RemoveModelVersion(ModelVersion modelVersion);
+
+
+    Task<ProjectFile> FindProjectFileAsync(string Url);
+    Task<ProjectFile> CreateProjectFileAsync(ProjectFile file);
+    Task<bool> DeleteProjectFileAsync(ProjectFile file);
 }

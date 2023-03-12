@@ -104,11 +104,26 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpPost]
         [Authorize]
-        [Route("{username}/{projectName}/readme")]
-        public async Task<ActionResult> UpdateFiles(string username,string projectName,string description, IFormFile file)
+        [Route("{userName}/{projectName}/readme")]
+        public async Task<ActionResult> UpdateFiles(string userName,string projectName,[FromForm]List<string> descriptions, [FromForm]List<IFormFile> files)
         {
-            string fullPath = $"{username}/{projectName}/{file.FileName}";
-            await domainService.CreateFileAsync(file.OpenReadStream(), fullPath, file.FileName, description);
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound("illegal request. ");
+            };
+            Project? project = await repository.GetProjectAsync(userName, projectName);
+            if (null == project)
+            {
+                return NotFound("illegal request. ");
+            }
+            List<ProjectFile> projectFiles = new();
+            foreach(var item in files.Zip(descriptions,(file,description)=>(file,description)))
+            {
+                string fullPath = $"{userName}/{projectName}/{item.file.FileName}";
+                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fullPath, item.file.FileName, item.description);
+                projectFiles.Add(projectFile);
+            }
+            project.ChangeReadmeFiles(projectFiles);
             await dbContext.SaveChangesAsync();
             return Ok();
         }

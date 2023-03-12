@@ -8,5 +8,6 @@ internal class ModelVersionConfig : IEntityTypeConfiguration<ModelVersion>
     public void Configure(EntityTypeBuilder<ModelVersion> builder)
     {
         builder.HasOne(c => c.Project).WithMany(a => a.ModelVersions);
+        builder.HasMany(p => p.Files).WithMany();
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace ProjectService.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace ProjectService.Domain.Entities;
 
 public class FirmwareVersion
 {
     public Guid Id { get; private set; }
+    [JsonIgnore]//Preventing circular References
     public Project Project { get; private set; }
     public string Name { get; private set; }
     public string? Description { get; private set; }

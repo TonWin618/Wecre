@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProjectService.Infrasturcture;
@@ -12,9 +13,11 @@ using ProjectService.Infrasturcture;
 namespace ProjectService.Infrasturcture.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    partial class ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230315133231_urlToRelativePath")]
+    partial class urlToRelativePath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("FirmwareVersionId");
 
-                    b.ToTable("FirmwareVersionProjectFile", (string)null);
+                    b.ToTable("FirmwareVersionProjectFile");
                 });
 
             modelBuilder.Entity("ModelVersionProjectFile", b =>
@@ -50,7 +53,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("ModelVersionId");
 
-                    b.ToTable("ModelVersionProjectFile", (string)null);
+                    b.ToTable("ModelVersionProjectFile");
                 });
 
             modelBuilder.Entity("ProjectProjectFile", b =>
@@ -65,7 +68,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("ReadmeFilesId");
 
-                    b.ToTable("ProjectProjectFile", (string)null);
+                    b.ToTable("ProjectProjectFile");
                 });
 
             modelBuilder.Entity("ProjectService.Domain.Entities.FirmwareVersion", b =>
@@ -91,7 +94,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("FirmwareVerisions", (string)null);
+                    b.ToTable("FirmwareVerisions");
                 });
 
             modelBuilder.Entity("ProjectService.Domain.Entities.ModelVersion", b =>
@@ -117,7 +120,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ModelVersions", (string)null);
+                    b.ToTable("ModelVersions");
                 });
 
             modelBuilder.Entity("ProjectService.Domain.Entities.Project", b =>
@@ -151,7 +154,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("UserName", "Name");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("ProjectService.Domain.Entities.ProjectFile", b =>
@@ -179,7 +182,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProjectFiles", (string)null);
+                    b.ToTable("ProjectFiles");
                 });
 
             modelBuilder.Entity("ProjectService.Domain.Entities.ProjectVersion", b =>
@@ -218,7 +221,7 @@ namespace ProjectService.Infrasturcture.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectVersions", (string)null);
+                    b.ToTable("ProjectVersions");
                 });
 
             modelBuilder.Entity("FirmwareVersionProjectFile", b =>

@@ -30,6 +30,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             Project? project = await repository.GetProjectAsync(userName, projectName);
             if (project == null) { return NotFound(); }
             //TODO: return view built on Project
+
             return project;
         }
 

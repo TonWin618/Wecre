@@ -16,23 +16,28 @@ public class ProjectRepository: IProjectRepository
 
     public async Task<Project?> GetProjectAsync(string userName, string projectName)
     {
-        return await dbContext.Projects.SingleOrDefaultAsync(p => p.UserName == userName && p.Name == projectName);
+        return await dbContext.Projects
+            .Include(p => p.ReadmeFiles)
+            .Include(p => p.ProjectVersions)
+            .Include(p => p.FirmwareVerisions)
+            .Include(p => p.ModelVersions).ThenInclude(m => m.Files)
+            .SingleOrDefaultAsync(p => p.UserName == userName && p.Name == projectName);
     }
     public async Task<Project[]?> GetProjectsByUserNameAsync(string userName)
     {
-        return await dbContext.Projects.Where(p => p.UserName == userName).ToArrayAsync();
+        return await dbContext.Projects.Include(p => p.ReadmeFiles).Where(p => p.UserName == userName).ToArrayAsync();
     }
     public async Task<ProjectVersion?> GetProjectVersionAsync(string userName, string projectName, string versionName)
     {
         return await dbContext.ProjectVersions.SingleOrDefaultAsync(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
     }
-    public Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName)
+    public async Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName)
     {
-        throw new NotImplementedException();
+        return await dbContext.FirmwareVerisions.Include(p => p.Files).SingleOrDefaultAsync(f => f.Project.UserName == userName && f.Project.Name == projectName && f.Name == versionName);
     }
-    public Task<ModelVersion?> GetModelVersionAsync(string userName, string projectName, string versionName)
+    public async Task<ModelVersion?> GetModelVersionAsync(string userName, string projectName, string versionName)
     {
-        throw new NotImplementedException();
+        return await dbContext.ModelVersions.Include(p => p.Files).SingleOrDefaultAsync(f => f.Project.UserName == userName && f.Project.Name == projectName && f.Name == versionName);
     }
 
 
@@ -45,16 +50,19 @@ public class ProjectRepository: IProjectRepository
     {
         var projectVersion = ProjectVersion.Create(project, name, description, firmwareVersion, modelVersion);
         await dbContext.AddAsync(projectVersion);
+        project.ProjectVersions.Add(projectVersion);
     }
     public async Task CreateFirmwareVersionAsync(string versionName, Project project, List<ProjectFile> files)
     {
         var firmwareVersion = FirmwareVersion.Create(versionName, project, files);
         await dbContext.AddAsync(firmwareVersion);
+        project.FirmwareVerisions.Add(firmwareVersion);
     }
     public async Task CreateModelVersionAsync(string versionName, Project project, List<ProjectFile> files)
     {
         var modelVersion = ModelVersion.Create(versionName, project, files);
         await dbContext.AddAsync(modelVersion);
+        project.ModelVersions.Add(modelVersion);
     }
 
 
@@ -66,13 +74,13 @@ public class ProjectRepository: IProjectRepository
     {
         dbContext.ProjectVersions.Remove(projectVersion);
     }
-    void IProjectRepository.RemoveFirmwareVersion(FirmwareVersion firmwareVersion)
+    public void RemoveFirmwareVersion(FirmwareVersion firmwareVersion)
     {
-        throw new NotImplementedException();
+        dbContext.FirmwareVerisions.Remove(firmwareVersion);
     }
-    void IProjectRepository.RemoveModelVersion(ModelVersion modelVersion)
+    public void RemoveModelVersion(ModelVersion modelVersion)
     {
-        throw new NotImplementedException();
+        dbContext.ModelVersions.Remove(modelVersion);
     }
 
 

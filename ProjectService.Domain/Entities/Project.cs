@@ -14,7 +14,7 @@ public class Project
     public DateTime UpdateTime { get; private set; }
     private Project() { }
 
-    public static Project Create(string userName, string name, string? description, List<string>? tags, List<ProjectFile> readmeFiles)
+    public static Project Create(string userName, string name, string? description, List<string>? tags)
     {
         Project project = new()
         {
@@ -23,7 +23,7 @@ public class Project
             Name = name,
             Description = description,
             Tags = tags,
-            ReadmeFiles = readmeFiles,
+            ReadmeFiles = null,
             CreationTime = DateTime.UtcNow,
             UpdateTime = DateTime.UtcNow
         };
@@ -48,7 +48,7 @@ public class Project
         return this;
     }
 
-    public Project UpdateUpdateTime()
+    public Project ChangeUpdateTime()
     {
         this.UpdateTime = DateTime.UtcNow;
         return this;

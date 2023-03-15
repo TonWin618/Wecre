@@ -5,6 +5,7 @@ public class FirmwareVersion
     public Guid Id { get; private set; }
     public Project Project { get; private set; }
     public string Name { get; private set; }
+    public string? Description { get; private set; }
     public List<ProjectFile> Files { get; private set; }
     public long Downloads { get; private set; }
     private FirmwareVersion() { }
@@ -16,5 +17,22 @@ public class FirmwareVersion
         firmwareVerision.Name = versionName;
         firmwareVerision.Files = files;
         return firmwareVerision;
+    }
+    public FirmwareVersion ChangeFiles(List<ProjectFile> files)
+    {
+        this.Files = files;
+        return this;
+    }
+
+    public FirmwareVersion ChangeDonwloads()
+    {
+        this.Downloads++;
+        return this;
+    }
+
+    public FirmwareVersion ChangeDescription(string? description)
+    {
+        this.Description = description;
+        return this;
     }
 }

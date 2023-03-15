@@ -12,6 +12,8 @@ public class ProjectRepository: IProjectRepository
     {
         this.dbContext = dbContext;
     }
+
+
     public async Task<Project?> GetProjectAsync(string userName, string projectName)
     {
         return await dbContext.Projects.SingleOrDefaultAsync(p => p.UserName == userName && p.Name == projectName);
@@ -22,7 +24,7 @@ public class ProjectRepository: IProjectRepository
     }
     public async Task<ProjectVersion?> GetProjectVersionAsync(string userName, string projectName, string versionName)
     {
-        return dbContext.ProjectVersions.SingleOrDefault(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
+        return await dbContext.ProjectVersions.SingleOrDefaultAsync(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
     }
     public Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName)
     {
@@ -34,9 +36,9 @@ public class ProjectRepository: IProjectRepository
     }
 
 
-    public async Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags, List<ProjectFile> readmeFiles)
+    public async Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags)
     {
-        var project = Project.Create(userName, name, description, tags, readmeFiles);
+        var project = Project.Create(userName, name, description, tags);
         await dbContext.AddAsync(project);
     }
     public async Task CreateProjectVersionAsync(Project project, string name, string description, FirmwareVersion firmwareVersion, ModelVersion modelVersion)
@@ -73,9 +75,10 @@ public class ProjectRepository: IProjectRepository
         throw new NotImplementedException();
     }
 
-    public async Task<ProjectFile?> FindProjectFileAsync(string Url)
+
+    public async Task<ProjectFile?> FindProjectFileAsync(string relativePath)
     {
-        return await dbContext.ProjectFiles.SingleOrDefaultAsync(p => p.Url == Url);
+        return await dbContext.ProjectFiles.SingleOrDefaultAsync(p => p.RelativePath == relativePath);
     }
     public async Task<ProjectFile> CreateProjectFileAsync(ProjectFile file)
     {

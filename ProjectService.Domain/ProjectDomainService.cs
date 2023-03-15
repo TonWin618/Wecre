@@ -1,4 +1,5 @@
 ﻿using ProjectService.Domain.Entities;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -16,31 +17,43 @@ public class ProjectDomainService
         this.fileServerRoot= fileServerRoot = new Uri("https://localhost:7212");
     }
     class UploadResp { public long FileSize { get; set; } public string Url { get; set; } }
-    public async Task<ProjectFile?> CreateFileAsync(Stream file, string dictory, string fileName, string description, CancellationToken stoppingToken = default)
+    public async Task<bool> DeleteAllFileAsync(Project project, CancellationToken stoppingToken = default)
+    {
+        var httpClient = httpClientFactory.CreateClient();
+        if (null == project.ReadmeFiles) return true;
+        foreach (ProjectFile item in project.ReadmeFiles)
+        {
+            Uri deleteUrl = new(fileServerRoot, $"api/Uploader/Delete?relativePath={item.RelativePath}");
+            HttpResponseMessage deleteResp = await httpClient.PostAsync(deleteUrl, null, stoppingToken);
+            if (!deleteResp.IsSuccessStatusCode)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public async Task<ProjectFile?> CreateFileAsync(Stream file, string fileName, string relativePath, string description, CancellationToken stoppingToken = default)
     {
         using MultipartFormDataContent content= new MultipartFormDataContent();
         var fileContent = new StreamContent(file);
-        content.Add(fileContent, "file", fileName);
+        content.Add(fileContent, "file", relativePath);
         var httpClient = httpClientFactory.CreateClient();
-        Uri requestUrl = new(fileServerRoot, $"api/Uploader/Upload?relativePath={dictory}");
-        HttpResponseMessage resp = await httpClient.PostAsync(requestUrl,content, stoppingToken);
-
-        UploadResp json = await resp.Content.ReadFromJsonAsync<UploadResp>();
-
-        if (resp.IsSuccessStatusCode)
+        Uri createUrl = new(fileServerRoot, $"api/Uploader/Upload?relativePath={relativePath}");
+        HttpResponseMessage createResp = await httpClient.PostAsync(createUrl, content, stoppingToken);
+        UploadResp? json = await createResp.Content.ReadFromJsonAsync<UploadResp>();
+        if (createResp.IsSuccessStatusCode)
         {
-            var projectFile = ProjectFile.Create(name: fileName, url: json.Url, sizeInBytes: json.FileSize, description: description);
+            var projectFile = ProjectFile.Create(name: fileName, relativePath: relativePath, sizeInBytes: json.FileSize, description: description);
             return await repository.CreateProjectFileAsync(projectFile);
         }
         return null;
     }
 
-    public async Task<bool> RemoveFileAsync(string relativePath, CancellationToken stoppingToken = default)
+    public async Task<bool> RemoveFileAsync(ProjectFile file, CancellationToken stoppingToken = default)
     {
-        Uri requestUrl = new(fileServerRoot, $"api/Uploader/RemoveFile?relativePath={relativePath}");
+        Uri requestUrl = new(fileServerRoot, $"api/Uploader/RemoveFile?relativePath={file.RelativePath}");
         var httpClient = httpClientFactory.CreateClient();
         await httpClient.GetFromJsonAsync<bool>(requestUrl, stoppingToken);
-        var file = await repository.FindProjectFileAsync(relativePath);
         await repository.DeleteProjectFileAsync(file);
         return true;
     }
@@ -65,7 +78,7 @@ public class ProjectDomainService
         {
             foreach (var file in project.ReadmeFiles)
             {
-                await RemoveFileAsync(file.Url);
+                await RemoveFileAsync(file);
             }
         }
         repository.RemoveProject(project);
@@ -81,17 +94,17 @@ public class ProjectDomainService
     {
         foreach(var file in firmwareVersion.Files)
         {
-            await RemoveFileAsync(file.Url);
+            await RemoveFileAsync(file);
         }
-        //repository.RemoveFirmwareVersion(firmwareVersion);
+        repository.RemoveFirmwareVersion(firmwareVersion);
     }
 
     public async void DeleteModelVersion(ModelVersion modelVersion)
     {
         foreach (var file in modelVersion.Files)
         {
-            await RemoveFileAsync(file.Url);
+            await RemoveFileAsync(file);
         }
-        //repository.RemoveModelVersion(modelVersion);
+        repository.RemoveModelVersion(modelVersion);
     }
 }

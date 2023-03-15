@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\ProjectController\UpdateFileRequest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -15,11 +19,6 @@
     <ProjectReference Include="..\Common.Initializer\Common.Initializer.csproj" />
     <ProjectReference Include="..\ProjectService.Domain\ProjectService.Domain.csproj" />
     <ProjectReference Include="..\ProjectService.Infrasturcture\ProjectService.Infrasturcture.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\FirmwareVersionController\" />
-    <Folder Include="Controllers\ModelVersionController\" />
   </ItemGroup>
 
 </Project>

@@ -11,12 +11,12 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
     [ApiController]
     public class ProjectController : ControllerBase
     {
+        const string restfulUrl = "{userName}/{projectName}";
         private readonly ProjectDbContext dbContext;
         private readonly IProjectRepository repository;
         private readonly ProjectDomainService domainService;
         public ProjectController(ProjectDbContext dbContext, IProjectRepository repository, ProjectDomainService domainService)
         {
-
             this.dbContext = dbContext;
             this.repository = repository;
             this.domainService = domainService;
@@ -24,53 +24,44 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("{userName}/{projectName}")]
+        [Route(restfulUrl)]
         public async Task<ActionResult<Project>> GetProject(string userName, string projectName)
         {
             Project? project = await repository.GetProjectAsync(userName, projectName);
-            if(project == null) 
-            {
-                return NotFound();
-            }
+            if (project == null) { return NotFound(); }
             //TODO: return view built on Project
             return project;
         }
 
         [HttpPost]
         [Authorize]
-        [Route("{userName}/{projectName}")]
+        [Route(restfulUrl)]
         public async Task<ActionResult> CreateProject(string userName, string projectName,
-            UpdateProjectRequest req)
+            string? description, List<string>? tags)
         {
-            if(userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
+            if (null != await repository.GetProjectAsync(userName, projectName))
             {
-                return Forbid("illegal request. ");
-            };
-            if(null != await repository.GetProjectAsync(userName, projectName))
-            {
-                return BadRequest("the target project already exists. ");
+                return Conflict("the target project already exists. ");
             }
-            await repository.CreateProjectAsync(userName, projectName, req.Description, req.Tags, null);
+
+            await repository.CreateProjectAsync(userName, projectName, description, tags);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut]
         [Authorize]
-        [Route("{userName}/{projectName}")]
+        [Route(restfulUrl)]
         public async Task<ActionResult> UpdateProject(string userName,string projectName,
-            UpdateProjectRequest req)
+            string? description, List<string>? tags)
         {
-            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return NotFound("illegal request. ");
-            };
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             Project? project = await repository.GetProjectAsync(userName,projectName);
             if(project == null) { return NotFound(); }
 
-            project.ChangeDescription(req.Description);
-            project.ChangeTags(req.Tags);
-            project.ChangeReadmeFiles(null);
+            project.ChangeDescription(description);
+            project.ChangeTags(tags);
 
             dbContext.Update(project);
             await dbContext.SaveChangesAsync();
@@ -79,16 +70,42 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpDelete]
         [Authorize]
-        [Route("{userName}/{projectName}")]
+        [Route(restfulUrl)]
         public async Task<ActionResult> DeleteProject(string userName, string projectName)
         {
-            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return NotFound("illegal request. ");
-            };
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             Project? project = await repository.GetProjectAsync(userName, projectName);
             if (project == null) { return NotFound(); }
+
             await domainService.DeleteProject(project);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{userName}/{projectName}/readme")]
+        public async Task<ActionResult> UpdateFiles(string userName,string projectName,
+            [FromForm]List<string> descriptions, [FromForm]List<IFormFile> files)
+        {
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)){ return BadRequest(); }
+            Project? project = await repository.GetProjectAsync(userName, projectName);
+            if (project == null) { return NotFound(); }
+
+            //remove duplicated files
+            List<ProjectFile> projectFiles = new();
+            foreach(var item in files.Zip(descriptions,(file,description)=>(file,description)))
+            {
+                string fileName = item.file.FileName;
+                string fullPath = $"{userName}/{projectName}/{fileName}";
+                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fileName, fullPath, item.description);
+                if(projectFile == null)
+                {
+                    return Problem("File server error. ");
+                }
+                projectFiles.Add(projectFile);
+            }
+            project.ChangeReadmeFiles(projectFiles);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -100,33 +117,6 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
         {
             //TODO: return view built on Project
             return await repository.GetProjectsByUserNameAsync(userName); ;
-        }
-
-        [HttpPost]
-        [Authorize]
-        //TODO: If the path has the same name as the version controller method.
-        [Route("{userName}/{projectName}/readme")]
-        public async Task<ActionResult> UpdateFiles(string userName,string projectName,[FromForm]List<string> descriptions, [FromForm]List<IFormFile> files)
-        {
-            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return NotFound("illegal request. ");
-            };
-            Project? project = await repository.GetProjectAsync(userName, projectName);
-            if (null == project)
-            {
-                return NotFound("illegal request. ");
-            }
-            List<ProjectFile> projectFiles = new();
-            foreach(var item in files.Zip(descriptions,(file,description)=>(file,description)))
-            {
-                string fullPath = $"{userName}/{projectName}/{item.file.FileName}";
-                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fullPath, item.file.FileName, item.description);
-                projectFiles.Add(projectFile);
-            }
-            project.ChangeReadmeFiles(projectFiles);
-            await dbContext.SaveChangesAsync();
-            return Ok();
         }
     }
 }

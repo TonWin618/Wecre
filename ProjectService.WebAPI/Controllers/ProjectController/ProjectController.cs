@@ -85,7 +85,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 
         [HttpPost]
         [Authorize]
-        [Route("{userName}/{projectName}/readme")]
+        [Route("{userName}/{projectName}/file")]
         public async Task<ActionResult> UpdateFiles(string userName,string projectName,
             [FromForm]List<string> descriptions, [FromForm]List<IFormFile> files)
         {

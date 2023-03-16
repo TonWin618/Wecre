@@ -127,7 +127,5 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             await dbContext.SaveChangesAsync();
             return Ok();
         }
-
-        
     }
 }

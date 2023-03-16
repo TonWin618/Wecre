@@ -29,7 +29,10 @@ public class ProjectRepository: IProjectRepository
     }
     public async Task<ProjectVersion?> GetProjectVersionAsync(string userName, string projectName, string versionName)
     {
-        return await dbContext.ProjectVersions.SingleOrDefaultAsync(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
+        return await dbContext.ProjectVersions
+            .Include(p => p.FirmwareVersion)
+            .Include(p => p.ModelVersion)
+            .SingleOrDefaultAsync(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
     }
     public async Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName)
     {

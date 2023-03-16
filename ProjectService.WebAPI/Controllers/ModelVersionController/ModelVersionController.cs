@@ -56,9 +56,9 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             if (null == await repository.GetProjectAsync(userName, projectName)){ return NotFound(); }
-            ModelVersion? ModelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
-            if (null == ModelVersion){ return NotFound(); }
-            ModelVersion.ChangeDonwloads();
+            ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
+            if (null == modelVersion){ return NotFound(); }
+            modelVersion.ChangeDonwloads();
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -69,9 +69,59 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         public async Task<ActionResult> DeleteProjectVersion(string userName, string projectName, string modelVersionName)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
-            ModelVersion? ModelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
-            if (ModelVersion == null) { return NotFound(); }
-            domainService.DeleteModelVersion(ModelVersion);
+            ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
+            if (modelVersion == null) { return NotFound(); }
+            domainService.DeleteModelVersion(modelVersion);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route($"{restfulUrl}/file")]
+        public async Task<ActionResult> CreateFiles(string userName, string projectName, string modelVersionName,
+            [FromForm] List<string> descriptions, [FromForm] List<IFormFile> files)
+        {
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
+            ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
+            if (modelVersion == null) { return NotFound(); }
+            //This is duplicate code and needs to be included in a function
+            foreach (var item in files.Zip(descriptions, (file, description) => (file, description)))
+            {
+
+                string fileName = item.file.FileName;
+                string relativePath = $"{userName}/{projectName}/model/{modelVersion.Name}/{fileName}";
+
+                if (null != await repository.FindProjectFileAsync(relativePath))
+                {
+                    return BadRequest("the target file already exists. ");
+                }
+                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fileName, relativePath, item.description);
+                if (null == projectFile)
+                {
+                    return Problem("File server error. ");
+                }
+                modelVersion.Files.Add(projectFile);
+            }
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route($"{restfulUrl}/file")]
+        public async Task<ActionResult> DeleteFiles(string userName, string projectName, string modelVersionName,
+            List<string> fileNames)
+        {
+            if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
+            ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
+            if (modelVersion == null) { return NotFound(); }
+            foreach (var fileName in fileNames)
+            {
+                ProjectFile? file = modelVersion.Files.SingleOrDefault(f => f.Name == fileName);
+                if (null == file) { return NotFound(); }
+                await domainService.RemoveFileAsync(file);
+            }
             await dbContext.SaveChangesAsync();
             return Ok();
         }

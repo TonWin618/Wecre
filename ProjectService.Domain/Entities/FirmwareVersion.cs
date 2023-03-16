@@ -21,7 +21,7 @@ public class FirmwareVersion
         firmwareVerision.Files = files;
         return firmwareVerision;
     }
-    public FirmwareVersion ChangeFiles(List<ProjectFile> files)
+    public FirmwareVersion AddFiles(List<ProjectFile> files)
     {
         this.Files = files;
         return this;

@@ -51,9 +51,13 @@ public class ProjectDomainService
 
     public async Task<bool> RemoveFileAsync(ProjectFile file, CancellationToken stoppingToken = default)
     {
-        Uri requestUrl = new(fileServerRoot, $"api/Uploader/RemoveFile?relativePath={file.RelativePath}");
         var httpClient = httpClientFactory.CreateClient();
-        await httpClient.GetFromJsonAsync<bool>(requestUrl, stoppingToken);
+        Uri deleteUrl = new(fileServerRoot, $"api/Uploader/Delete?relativePath={file.RelativePath}");
+        HttpResponseMessage deleteResp = await httpClient.DeleteAsync(deleteUrl, stoppingToken);
+        if(!deleteResp.IsSuccessStatusCode) 
+        {
+            return false;
+        }
         await repository.DeleteProjectFileAsync(file);
         return true;
     }

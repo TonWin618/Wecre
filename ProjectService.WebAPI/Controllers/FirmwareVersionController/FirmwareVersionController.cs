@@ -88,25 +88,23 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (firmwareVersion == null) { return NotFound(); }
             //This is duplicate code and needs to be included in a function
-            List<ProjectFile> projectFiles = new();
             foreach (var item in files.Zip(descriptions, (file, description) => (file, description)))
             {
                 
                 string fileName = item.file.FileName;
-                string fullPath = $"{userName}/{projectName}/firmware/{firmwareVersion.Name}/{fileName}";
+                string relativePath = $"{userName}/{projectName}/firmware/{firmwareVersion.Name}/{fileName}";
 
-                if (null != await repository.FindProjectFileAsync(fullPath))
+                if (null != await repository.FindProjectFileAsync(relativePath))
                 {
                     return BadRequest("the target file already exists. ");
                 }
-                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fileName, fullPath, item.description);
-                if (projectFile == null)
+                var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fileName, relativePath, item.description);
+                if (null == projectFile)
                 {
                     return Problem("File server error. ");
                 }
-                projectFiles.Add(projectFile);
+                firmwareVersion.Files.Add(projectFile);
             }
-            firmwareVersion.ChangeFiles(projectFiles);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -115,20 +113,18 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
         [Authorize]
         [Route($"{restfulUrl}/file")]
         public async Task<ActionResult> DeleteFiles(string userName, string projectName, string firmwareVersionName, 
-            List<string> relativePaths)
+            List<string> fileNames)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (firmwareVersion == null) { return NotFound(); }
-            foreach(var path in relativePaths)
+            foreach(var fileName in fileNames)
             {
-                ProjectFile file = await repository.FindProjectFileAsync(path);
-                if (null == firmwareVersion.Files.SingleOrDefault(file))
-                {
-                    return NotFound();
-                }
+                ProjectFile? file = firmwareVersion.Files.SingleOrDefault(f => f.Name == fileName);
+                if(null == file) { return NotFound(); }
                 await domainService.RemoveFileAsync(file);
             }
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
 

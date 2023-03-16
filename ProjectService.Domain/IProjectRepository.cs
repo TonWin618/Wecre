@@ -23,7 +23,7 @@ public interface IProjectRepository
     void RemoveModelVersion(ModelVersion modelVersion);
 
 
-    Task<ProjectFile> FindProjectFileAsync(string relativePath);
+    Task<ProjectFile?> FindProjectFileAsync(string relativePath);
     Task<ProjectFile> CreateProjectFileAsync(ProjectFile file);
     Task<bool> DeleteProjectFileAsync(ProjectFile file);
 }

@@ -52,9 +52,16 @@ public class FileDomainService
         {
             return false;
         }
-        await repository.RemoveFileAsync(relativePath);
-        await backupStorage.RemoveAsync(fileItem.BackupUrl.ToString());
-        await remoteStorage.RemoveAsync(fileItem.RemoteUrl.ToString());
+        //Do not change the order of deletion
+        if (false == await backupStorage.RemoveAsync(fileItem.BackupUrl.AbsolutePath.ToString()))
+        {
+            return false;
+        }
+        if(false == await remoteStorage.RemoveAsync(fileItem.RemoteUrl.AbsolutePath.ToString()))
+        {
+            return false;
+        }
+        await repository.RemoveFileAsync(fileItem);
         return true;
     }
 }

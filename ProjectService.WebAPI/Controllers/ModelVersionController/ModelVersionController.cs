@@ -11,7 +11,7 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
     [ApiController]
     public class ModelVersionController : ControllerBase
     {
-        const string restfulUrl = "{userName}/{projectName}/m/{modelVersionName}";
+        const string restfulUrl = "{userName}/{projectName}/model/{modelVersionName}";
         private readonly ProjectDbContext dbContext;
         private readonly IProjectRepository repository;
         private readonly ProjectDomainService domainService;

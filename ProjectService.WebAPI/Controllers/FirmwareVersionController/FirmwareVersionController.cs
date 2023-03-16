@@ -12,7 +12,7 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
     public class FirmwareVersionController : ControllerBase
     {
         //This class needs to be abstracted as an interface
-        const string restfulUrl = "{userName}/{projectName}/f/{firmwareVersionName}";
+        const string restfulUrl = "{userName}/{projectName}/firmware/{firmwareVersionName}";
         private readonly ProjectDbContext dbContext;
         private readonly IProjectRepository repository;
         private readonly ProjectDomainService domainService;
@@ -91,8 +91,14 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             List<ProjectFile> projectFiles = new();
             foreach (var item in files.Zip(descriptions, (file, description) => (file, description)))
             {
+                
                 string fileName = item.file.FileName;
-                string fullPath = $"{userName}/{projectName}/{fileName}";
+                string fullPath = $"{userName}/{projectName}/firmware/{firmwareVersion.Name}/{fileName}";
+
+                if (null != await repository.FindProjectFileAsync(fullPath))
+                {
+                    return BadRequest("the target file already exists. ");
+                }
                 var projectFile = await domainService.CreateFileAsync(item.file.OpenReadStream(), fileName, fullPath, item.description);
                 if (projectFile == null)
                 {
@@ -101,6 +107,7 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
                 projectFiles.Add(projectFile);
             }
             firmwareVersion.ChangeFiles(projectFiles);
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -116,6 +123,10 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             foreach(var path in relativePaths)
             {
                 ProjectFile file = await repository.FindProjectFileAsync(path);
+                if (null == firmwareVersion.Files.SingleOrDefault(file))
+                {
+                    return NotFound();
+                }
                 await domainService.RemoveFileAsync(file);
             }
             return Ok();

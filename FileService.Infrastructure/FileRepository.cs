@@ -18,14 +18,9 @@ public class FileRepository:IFileRepository
             u => u.RelativePath == relativePath);
     }
 
-    public async Task<bool> RemoveFileAsync(string relativePath)
+    public async Task<bool> RemoveFileAsync(FileItem fileItem)
     {
-        FileItem? file = await FindFileAsync(relativePath);
-        if (file == null)
-        {
-            return false;
-        }
-        dbContext.FileItems.Remove(file);
+        dbContext.FileItems.Remove(fileItem);
         return true;
     }
 }

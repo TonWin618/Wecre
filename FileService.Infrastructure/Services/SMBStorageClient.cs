@@ -15,11 +15,18 @@ public class SMBStorageClient:IStorageClient
 
     public async Task<bool> RemoveAsync(string fullPath)
     {
-        if (File.Exists(fullPath))
+        if (!File.Exists(fullPath))
         {
             return false;
         }
-        File.Delete(fullPath);
+        try
+        {
+            File.Delete(fullPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
         return true;
     }
 

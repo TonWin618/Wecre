@@ -55,6 +55,7 @@ namespace FileService.WebAPI.Controllers
                 return NotFound();
             }
             await domainService.DeleteFileAsync(relativePath);
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }

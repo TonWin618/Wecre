@@ -83,11 +83,11 @@ namespace IdentityService.WebAPI.Controllers.User
             }
         }
         [HttpPost]
-        public async Task<ActionResult> ConfirmEmailAddress(ConfirmEmailRequest req)
+        public async Task<ActionResult> ConfirmEmailAddress(string token)
         {
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await repository.FindByNameAsync(userName);
-            if (IdentityResult.Success == await repository.VerifyConfirmEmailTokenAsync(user,req.token))
+            if (IdentityResult.Success == await repository.VerifyConfirmEmailTokenAsync(user,token))
             {
                 return Ok("The email address has been confirmed");
             }

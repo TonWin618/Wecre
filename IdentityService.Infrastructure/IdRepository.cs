@@ -145,7 +145,7 @@ namespace IdentityService.Infrastructure
         /// <exception cref="NotImplementedException"></exception>
         public async Task<bool> VerifyEmailTokenAsync(User user, string token)
         {
-            return await userManager.VerifyTwoFactorTokenAsync(user, "Email",token);    
+            return await userManager.VerifyTwoFactorTokenAsync(user, "Email",token);
         }
         /// <summary>
         /// 

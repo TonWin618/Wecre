@@ -3,6 +3,7 @@ using Common.JWT;
 using IdentityService.Domain;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
+using IdentityService.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IIdRepository,IdRepository>();
-builder.Services.AddScoped<IEmailSender, MockEmailSender>();
+builder.Services.AddScoped<IEmailSender, SMTPEmailSender>();
 builder.Services.AddScoped<IdDomainService>();
+
+builder.Services.Configure<SMTPEmailOptions>(builder.Configuration.GetSection("SMTPEmailSender"));
 
 builder.Services.AddDbContext<IdDbContext>(opt =>
 {

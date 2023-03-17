@@ -96,18 +96,24 @@ public class ProjectDomainService
 
     public async void DeleteFirmwareVersion(FirmwareVersion firmwareVersion)
     {
-        foreach(var file in firmwareVersion.Files)
+        if(firmwareVersion.Files!=null)
         {
-            await RemoveFileAsync(file);
+            foreach (var file in firmwareVersion.Files)
+            {
+                await RemoveFileAsync(file);
+            }
         }
         repository.RemoveFirmwareVersion(firmwareVersion);
     }
 
     public async void DeleteModelVersion(ModelVersion modelVersion)
     {
-        foreach (var file in modelVersion.Files)
+        if (modelVersion.Files != null)
         {
-            await RemoveFileAsync(file);
+            foreach (var file in modelVersion.Files)
+            {
+                await RemoveFileAsync(file);
+            }
         }
         repository.RemoveModelVersion(modelVersion);
     }

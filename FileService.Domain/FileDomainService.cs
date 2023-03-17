@@ -53,11 +53,11 @@ public class FileDomainService
             return false;
         }
         //Do not change the order of deletion
-        if (false == await backupStorage.RemoveAsync(fileItem.BackupUrl.AbsolutePath.ToString()))
+        if (false == await backupStorage.RemoveAsync(fileItem.BackupUrl.LocalPath.ToString()))
         {
             return false;
         }
-        if(false == await remoteStorage.RemoveAsync(fileItem.RemoteUrl.AbsolutePath.ToString()))
+        if(false == await remoteStorage.RemoveAsync(fileItem.RemoteUrl.LocalPath.ToString()))
         {
             return false;
         }

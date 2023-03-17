@@ -92,10 +92,19 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)){ return BadRequest(); }
             Project? project = await repository.GetProjectAsync(userName, projectName);
             if (project == null) { return NotFound(); }
+            
+            if(project.ReadmeFiles!= null)
+            {
+                foreach (var file in project.ReadmeFiles)
+                {
+                    string fileName = file.Name;
+                    string fullPath = $"{userName}/{projectName}/{fileName}";
+                    await domainService.RemoveFileAsync(file);
+                }
+            }
 
-            //remove duplicated files
             List<ProjectFile> projectFiles = new();
-            foreach(var item in files.Zip(descriptions,(file,description)=>(file,description)))
+            foreach (var item in files.Zip(descriptions,(file,description)=>(file,description)))
             {
                 string fileName = item.file.FileName;
                 string fullPath = $"{userName}/{projectName}/{fileName}";

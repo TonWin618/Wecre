@@ -1,5 +1,6 @@
 ﻿using FileService.Domain;
 using Microsoft.Extensions.Options;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FileService.WebAPI.Controllers;
 
@@ -15,6 +16,7 @@ public class SMBStorageClient:IStorageClient
 
     public async Task<bool> RemoveAsync(string fullPath)
     {
+    //D:\Temp\upload\string\test\2(1).txt
         if (!File.Exists(fullPath))
         {
             return false;

@@ -25,7 +25,7 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         [HttpGet]
         [AllowAnonymous]
         [Route(restfulUrl)]
-        public async Task<ActionResult<ModelVersion>> GetProjectVersion(string userName, string projectName, string modelVersionName)
+        public async Task<ActionResult<ModelVersion>> GetModelVersion(string userName, string projectName, string modelVersionName)
         {
             ModelVersion? ModelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
             if (null == ModelVersion) { return NotFound(); }
@@ -35,7 +35,8 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         [HttpPost]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> CreateProjectVersion(string userName, string projectName, string modelVersionName)
+        public async Task<ActionResult> CreateModelVersion(string userName, string projectName, string modelVersionName,
+            string description)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             Project? project = await repository.GetProjectAsync(userName, projectName);
@@ -44,7 +45,8 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
             {
                 return BadRequest("the target project version already exists. ");
             }
-            await repository.CreateModelVersionAsync(modelVersionName, project, null);
+            ModelVersion modelVersion = await repository.CreateModelVersionAsync(modelVersionName, project);
+            modelVersion.ChangeDescription(description);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -52,13 +54,14 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         [HttpPut]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> UpdateProjectVersion(string userName, string projectName, string modelVersionName)
+        public async Task<ActionResult> UpdateModelVersion(string userName, string projectName, string modelVersionName,
+            string description)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             if (null == await repository.GetProjectAsync(userName, projectName)){ return NotFound(); }
             ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
             if (null == modelVersion){ return NotFound(); }
-            modelVersion.ChangeDonwloads();
+            modelVersion.ChangeDescription(description);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -66,7 +69,7 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
         [HttpDelete]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> DeleteProjectVersion(string userName, string projectName, string modelVersionName)
+        public async Task<ActionResult> DeleteModelVersion(string userName, string projectName, string modelVersionName)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);

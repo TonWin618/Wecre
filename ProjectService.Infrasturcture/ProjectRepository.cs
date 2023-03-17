@@ -30,8 +30,8 @@ public class ProjectRepository: IProjectRepository
     public async Task<ProjectVersion?> GetProjectVersionAsync(string userName, string projectName, string versionName)
     {
         return await dbContext.ProjectVersions
-            .Include(p => p.FirmwareVersion)
-            .Include(p => p.ModelVersion)
+            .Include(p => p.FirmwareVersion)//.ThenInclude(f => f.Files)
+            .Include(p => p.ModelVersion)//.ThenInclude(f => p.Files)
             .SingleOrDefaultAsync(p => p.Project.UserName == userName && p.Project.Name == projectName && p.Name == versionName);
     }
     public async Task<FirmwareVersion?> GetFirmwareVerisionAsync(string userName, string projectName, string versionName)
@@ -44,28 +44,32 @@ public class ProjectRepository: IProjectRepository
     }
 
 
-    public async Task CreateProjectAsync(string userName, string name, string? description, List<string>? tags)
+    public async Task<Project> CreateProjectAsync(string userName, string name, string? description, List<string>? tags)
     {
         var project = Project.Create(userName, name, description, tags);
         await dbContext.AddAsync(project);
+        return project;
     }
-    public async Task CreateProjectVersionAsync(Project project, string name, string description, FirmwareVersion firmwareVersion, ModelVersion modelVersion)
+    public async Task<ProjectVersion> CreateProjectVersionAsync(Project project, string name, string description, FirmwareVersion firmwareVersion, ModelVersion modelVersion)
     {
         var projectVersion = ProjectVersion.Create(project, name, description, firmwareVersion, modelVersion);
         await dbContext.AddAsync(projectVersion);
         project.ProjectVersions.Add(projectVersion);
+        return projectVersion;
     }
-    public async Task CreateFirmwareVersionAsync(string versionName, Project project, List<ProjectFile> files)
+    public async Task<FirmwareVersion> CreateFirmwareVersionAsync(string versionName, Project project)
     {
-        var firmwareVersion = FirmwareVersion.Create(versionName, project, files);
+        var firmwareVersion = FirmwareVersion.Create(versionName, project);
         await dbContext.AddAsync(firmwareVersion);
         project.FirmwareVerisions.Add(firmwareVersion);
+        return firmwareVersion;
     }
-    public async Task CreateModelVersionAsync(string versionName, Project project, List<ProjectFile> files)
+    public async Task<ModelVersion> CreateModelVersionAsync(string versionName, Project project)
     {
-        var modelVersion = ModelVersion.Create(versionName, project, files);
+        var modelVersion = ModelVersion.Create(versionName, project);
         await dbContext.AddAsync(modelVersion);
         project.ModelVersions.Add(modelVersion);
+        return modelVersion;
     }
 
 

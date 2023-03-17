@@ -12,13 +12,13 @@ public class FirmwareVersion
     public List<ProjectFile> Files { get; private set; }
     public long Downloads { get; private set; }
     private FirmwareVersion() { }
-    public static FirmwareVersion Create(string versionName,Project project, List<ProjectFile> files)
+    public static FirmwareVersion Create(string versionName,Project project)
     {
         FirmwareVersion firmwareVerision = new();
         firmwareVerision.Id = Guid.NewGuid();
         firmwareVerision.Project= project;
         firmwareVerision.Name = versionName;
-        firmwareVerision.Files = files;
+        firmwareVerision.Files = null;
         return firmwareVerision;
     }
     public FirmwareVersion AddFiles(List<ProjectFile> files)

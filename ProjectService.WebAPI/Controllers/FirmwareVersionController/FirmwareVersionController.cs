@@ -27,7 +27,7 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
         [HttpGet]
         [AllowAnonymous]
         [Route(restfulUrl)]
-        public async Task<ActionResult<FirmwareVersion>> GetProjectVersion(string userName, string projectName, string firmwareVersionName)
+        public async Task<ActionResult<FirmwareVersion>> GetFirmwareVersion(string userName, string projectName, string firmwareVersionName)
         {
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (null == firmwareVersion){ return NotFound(); }
@@ -37,7 +37,8 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
         [HttpPost]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> CreateProjectVersion(string userName, string projectName, string firmwareVersionName)
+        public async Task<ActionResult> CreateFirmwareVersion(string userName, string projectName, string firmwareVersionName,
+            string description)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)){ return BadRequest();}
             Project? project = await repository.GetProjectAsync(userName, projectName);
@@ -46,7 +47,8 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             {
                 return BadRequest("the target project version already exists. ");
             }
-            await repository.CreateFirmwareVersionAsync(firmwareVersionName, project,null);
+            FirmwareVersion firmwareVersion = await repository.CreateFirmwareVersionAsync(firmwareVersionName, project);
+            firmwareVersion.ChangeDescription(description);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -54,13 +56,14 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
         [HttpPut]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> UpdateProjectVersion(string userName, string projectName, string firmwareVersionName)
+        public async Task<ActionResult> UpdateFirmwareVersion(string userName, string projectName, string firmwareVersionName,
+            string description)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             if (null == await repository.GetProjectAsync(userName, projectName)){ return NotFound();}
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (null == firmwareVersion){ return NotFound(); }
-            firmwareVersion.ChangeDonwloads();
+            firmwareVersion.ChangeDescription(description);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
@@ -68,7 +71,7 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
         [HttpDelete]
         [Authorize]
         [Route(restfulUrl)]
-        public async Task<ActionResult> DeleteProjectVersion(string userName, string projectName, string firmwareVersionName)
+        public async Task<ActionResult> DeleteFirmwareVersion(string userName, string projectName, string firmwareVersionName)
         {
             if (userName != User.FindFirstValue(ClaimTypes.NameIdentifier)) { return BadRequest(); }
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);

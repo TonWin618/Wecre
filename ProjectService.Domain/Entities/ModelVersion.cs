@@ -12,13 +12,13 @@ public class ModelVersion
     public List<ProjectFile> Files { get; private set; }
     public long Downloads { get; private set; }
     private ModelVersion() { }
-    public static ModelVersion Create(string versionName, Project project, List<ProjectFile> files)
+    public static ModelVersion Create(string versionName, Project project)
     {
         ModelVersion modelVersion = new();
         modelVersion.Id = Guid.NewGuid();
         modelVersion.Project = project;
         modelVersion.Name = versionName;
-        modelVersion.Files = files;
+        modelVersion.Files = null;
         return modelVersion;
     }
 

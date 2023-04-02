@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectService.Domain", "Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectService.Infrasturcture", "ProjectService.Infrasturcture\ProjectService.Infrasturcture.csproj", "{2BB2E6AF-408A-4AC0-A834-4684E7E3DC7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.ASPNETCore", "Common.ASPNETCore\Common.ASPNETCore.csproj", "{9EDADE52-99B5-4495-9FC8-1ECBAD39D804}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{2BB2E6AF-408A-4AC0-A834-4684E7E3DC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BB2E6AF-408A-4AC0-A834-4684E7E3DC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BB2E6AF-408A-4AC0-A834-4684E7E3DC7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EDADE52-99B5-4495-9FC8-1ECBAD39D804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EDADE52-99B5-4495-9FC8-1ECBAD39D804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EDADE52-99B5-4495-9FC8-1ECBAD39D804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EDADE52-99B5-4495-9FC8-1ECBAD39D804}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{CA4754FF-5C8C-4C33-8898-7B546C1BC4E9} = {92BBB7FA-3109-4E1E-9D20-9D2E8A12FD12}
 		{790943F0-97F7-48CA-8EA6-CF88C0F786E1} = {92BBB7FA-3109-4E1E-9D20-9D2E8A12FD12}
 		{2BB2E6AF-408A-4AC0-A834-4684E7E3DC7E} = {92BBB7FA-3109-4E1E-9D20-9D2E8A12FD12}
+		{9EDADE52-99B5-4495-9FC8-1ECBAD39D804} = {7FD658E0-3272-4115-A4E1-03E333BE872D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8815C97-2444-4B47-A9DE-32D20A497D65}

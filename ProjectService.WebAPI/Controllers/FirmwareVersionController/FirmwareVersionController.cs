@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.ASPNETCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
@@ -9,6 +10,7 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
 {
     [Route("api/")]
     [ApiController]
+    [UnitOfWork(typeof(ProjectDbContext))]
     public class FirmwareVersionController : ControllerBase
     {
         //This class needs to be abstracted as an interface

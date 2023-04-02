@@ -1,6 +1,8 @@
-﻿using Common.JWT;
+﻿using Common.ASPNETCore;
+using Common.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -18,7 +20,7 @@ public static class WebApplicationBuilderExtensions
 #pragma warning disable ASP0013 // Suggest switching from using Configure methods to WebApplicationBuilder.Configuration
         builder.Host.ConfigureAppConfiguration((hostCtx, configBuilder) =>
         {
-            string? connStr = builder.Configuration.GetValue<string>("DefaultDB:ConnStr");
+            string connStr = builder.Configuration.GetValue<string>("DefaultDB:ConnStr");
             configBuilder.AddDbConfiguration(() => new NpgsqlConnection(connStr), reloadOnChange: true, tableName:"Configurations", reloadInterval: TimeSpan.FromSeconds(5));
         });
 #pragma warning restore ASP0013 // Suggest switching from using Configure methods to WebApplicationBuilder.Configuration
@@ -29,6 +31,7 @@ public static class WebApplicationBuilderExtensions
         IServiceCollection services = builder.Services;
         IConfiguration configuration = builder.Configuration;
         
+        //Auth
         services.AddAuthorization();
         services.AddAuthentication();
         JWTOptions? jwtOpt = configuration.GetSection("JWT").Get<JWTOptions>();
@@ -45,6 +48,8 @@ public static class WebApplicationBuilderExtensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpt.Key))
             };
         });
+
+        //Swagger
         services.Configure<SwaggerGenOptions>(c =>
         {
             c.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
@@ -73,6 +78,14 @@ public static class WebApplicationBuilderExtensions
                 }
             });
         });
+
+        //UnitOfWork
+        services.Configure<MvcOptions>(options =>
+        {
+            options.Filters.Add<UnitOfWorkFilter>();
+        });
+
+        //Cors
         var corsOpt = configuration.GetSection("Cors").Get<CorsSettings>();
         string[] urls = corsOpt.Origins;
         services.AddCors(options =>
@@ -83,6 +96,7 @@ public static class WebApplicationBuilderExtensions
                     .AllowCredentials());
             }
          );
+
         services.AddLogging();
         services.Configure<JWTOptions>(configuration.GetSection("JWT"));
     }

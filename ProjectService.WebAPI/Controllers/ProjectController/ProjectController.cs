@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.ASPNETCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
@@ -9,6 +10,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
 {
     [Route("api/")]
     [ApiController]
+    [UnitOfWork(typeof(ProjectDbContext))]
     public class ProjectController : ControllerBase
     {
         const string restfulUrl = "{userName}/{projectName}";
@@ -47,7 +49,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             }
 
             await repository.CreateProjectAsync(userName, projectName, description, tags);
-            await dbContext.SaveChangesAsync();
+            //await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -65,7 +67,7 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             project.ChangeTags(tags);
 
             dbContext.Update(project);
-            await dbContext.SaveChangesAsync();
+            //await dbContext.SaveChangesAsync();
             return Ok();
         }
 

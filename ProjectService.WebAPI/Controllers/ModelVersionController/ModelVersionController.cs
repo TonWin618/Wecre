@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.ASPNETCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
@@ -9,6 +10,7 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
 {
     [Route("api/")]
     [ApiController]
+    [UnitOfWork(typeof(ProjectDbContext))]
     public class ModelVersionController : ControllerBase
     {
         const string restfulUrl = "{userName}/{projectName}/model/{modelVersionName}";

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.ASPNETCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectService.Domain;
 using ProjectService.Domain.Entities;
@@ -9,6 +10,7 @@ namespace ProjectService.WebAPI.Controllers.VersionController
 {
     [Route("api/")]
     [ApiController]
+    [UnitOfWork(typeof(ProjectDbContext))]
     public class VersionController : ControllerBase
     {
         const string restfulUrl = "{userName}/{projectName}/version/{versionName}";
@@ -60,7 +62,7 @@ namespace ProjectService.WebAPI.Controllers.VersionController
                 return BadRequest("The target model version does not exist. ");
             }
             await repository.CreateProjectVersionAsync(project, versionName, description, firmwareVersion,modelVersion);
-            await dbContext.SaveChangesAsync();
+            //await dbContext.SaveChangesAsync();
             return Ok();
         }
 

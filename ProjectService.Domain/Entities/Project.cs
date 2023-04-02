@@ -12,45 +12,42 @@ public class Project
     public List<FirmwareVersion>? FirmwareVerisions { get; private set; }
     public DateTime CreationTime { get; private set; }
     public DateTime UpdateTime { get; private set; }
-    private Project() { }
 
-    public static Project Create(string userName, string name, string? description, List<string>? tags)
+    //Used when EFCore initializes the database
+    private Project() { }
+    public Project(string userName, string name, string? description, List<string>? tags)
     {
-        Project project = new()
-        {
-            Id = Guid.NewGuid(),
-            UserName = userName,
-            Name = name,
-            Description = description,
-            Tags = tags,
-            ReadmeFiles = null,
-            CreationTime = DateTime.UtcNow,
-            UpdateTime = DateTime.UtcNow
-        };
-        return project;
+        Id = Guid.NewGuid();
+        UserName = userName;
+        Name = name;
+        Description = description;
+        Tags = tags;
+        ReadmeFiles = null;
+        CreationTime = DateTime.UtcNow;
+        UpdateTime = DateTime.UtcNow;
     }
 
     public Project ChangeTags(List<string>? tags) 
     { 
-        this.Tags = tags;
+        Tags = tags;
         return this;
     }
 
     public Project ChangeDescription(string? description)
     {
-        this.Description = description;
+        Description = description;
         return this;
     }
 
     public Project ChangeReadmeFiles(List<ProjectFile>? readmeFiles)
     {
-        this.ReadmeFiles = readmeFiles;
+        ReadmeFiles = readmeFiles;
         return this;
     }
 
     public Project ChangeUpdateTime()
     {
-        this.UpdateTime = DateTime.UtcNow;
+        UpdateTime = DateTime.UtcNow;
         return this;
     }
 }

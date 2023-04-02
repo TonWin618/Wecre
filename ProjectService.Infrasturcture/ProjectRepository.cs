@@ -46,27 +46,27 @@ public class ProjectRepository: IProjectRepository
 
     public async Task<Project> CreateProjectAsync(string userName, string name, string? description, List<string>? tags)
     {
-        var project = Project.Create(userName, name, description, tags);
+        var project = new Project(userName, name, description, tags);
         await dbContext.AddAsync(project);
         return project;
     }
     public async Task<ProjectVersion> CreateProjectVersionAsync(Project project, string name, string description, FirmwareVersion firmwareVersion, ModelVersion modelVersion)
     {
-        var projectVersion = ProjectVersion.Create(project, name, description, firmwareVersion, modelVersion);
+        var projectVersion = new ProjectVersion(project, name, description, firmwareVersion, modelVersion);
         await dbContext.AddAsync(projectVersion);
         project.ProjectVersions.Add(projectVersion);
         return projectVersion;
     }
     public async Task<FirmwareVersion> CreateFirmwareVersionAsync(string versionName, Project project)
     {
-        var firmwareVersion = FirmwareVersion.Create(versionName, project);
+        var firmwareVersion = new FirmwareVersion(versionName, project);
         await dbContext.AddAsync(firmwareVersion);
         project.FirmwareVerisions.Add(firmwareVersion);
         return firmwareVersion;
     }
     public async Task<ModelVersion> CreateModelVersionAsync(string versionName, Project project)
     {
-        var modelVersion = ModelVersion.Create(versionName, project);
+        var modelVersion = new ModelVersion(versionName, project);
         await dbContext.AddAsync(modelVersion);
         project.ModelVersions.Add(modelVersion);
         return modelVersion;

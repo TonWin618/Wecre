@@ -11,31 +11,31 @@ public class FirmwareVersion
     public string? Description { get; private set; }
     public List<ProjectFile> Files { get; private set; }
     public long Downloads { get; private set; }
+
+    //Used when EFCore initializes the database
     private FirmwareVersion() { }
-    public static FirmwareVersion Create(string versionName,Project project)
+    public FirmwareVersion (string versionName,Project project)
     {
-        FirmwareVersion firmwareVerision = new();
-        firmwareVerision.Id = Guid.NewGuid();
-        firmwareVerision.Project= project;
-        firmwareVerision.Name = versionName;
-        firmwareVerision.Files = null;
-        return firmwareVerision;
+        Id = Guid.NewGuid();
+        Project= project;
+        Name = versionName;
+        Files = new List<ProjectFile>();
     }
     public FirmwareVersion AddFiles(List<ProjectFile> files)
     {
-        this.Files = files;
+        Files = files;
         return this;
     }
 
     public FirmwareVersion ChangeDonwloads()
     {
-        this.Downloads++;
+        Downloads++;
         return this;
     }
 
     public FirmwareVersion ChangeDescription(string? description)
     {
-        this.Description = description;
+        Description = description;
         return this;
     }
 }

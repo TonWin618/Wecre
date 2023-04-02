@@ -11,26 +11,26 @@ public class ModelVersion
     public string? Description { get; private set; }
     public List<ProjectFile> Files { get; private set; }
     public long Downloads { get; private set; }
+
+    //Used when EFCore initializes the database
     private ModelVersion() { }
-    public static ModelVersion Create(string versionName, Project project)
+    public ModelVersion(string versionName, Project project)
     {
-        ModelVersion modelVersion = new();
-        modelVersion.Id = Guid.NewGuid();
-        modelVersion.Project = project;
-        modelVersion.Name = versionName;
-        modelVersion.Files = null;
-        return modelVersion;
+        Id = Guid.NewGuid();
+        Project = project;
+        Name = versionName;
+        Files = new List<ProjectFile>();
     }
 
     public ModelVersion ChangeDonwloads()
     {
-        this.Downloads++;
+        Downloads++;
         return this;
     }
 
     public ModelVersion ChangeDescription(string? description)
     {
-        this.Description = description;
+        Description = description;
         return this;
     }
 }

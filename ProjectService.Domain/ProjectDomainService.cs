@@ -43,7 +43,7 @@ public class ProjectDomainService
         UploadResp? json = await createResp.Content.ReadFromJsonAsync<UploadResp>();
         if (createResp.IsSuccessStatusCode)
         {
-            var projectFile = ProjectFile.Create(name: fileName, relativePath: relativePath, sizeInBytes: json.FileSize, description: description);
+            var projectFile = new ProjectFile(name: fileName, relativePath: relativePath, sizeInBytes: json.FileSize, description: description);
             return await repository.CreateProjectFileAsync(projectFile);
         }
         return null;

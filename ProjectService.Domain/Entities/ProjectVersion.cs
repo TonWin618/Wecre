@@ -13,22 +13,19 @@ public class ProjectVersion
     public long TotalDownloads { get; private set; }
     public FirmwareVersion? FirmwareVersion { get; private set; }
     public ModelVersion? ModelVersion { get; private set; }
+    //Used when EFCore initializes the database
     private ProjectVersion() { }
-    public static ProjectVersion Create(Project project , string name, string description,
+    public ProjectVersion(Project project , string name, string description,
         FirmwareVersion firmwareVersion, ModelVersion modelVersion)
     {
-        ProjectVersion version = new()
-        {
-            Id = Guid.NewGuid(),
-            Project= project,
-            Name = name,
-            CreationTime= DateTime.UtcNow,
-            Description = description,
-            TotalDownloads= 0,
-            FirmwareVersion = firmwareVersion,
-            ModelVersion = modelVersion
-        };
-        return version;
+        Id = Guid.NewGuid();
+        Project= project;
+        Name = name;
+        CreationTime= DateTime.UtcNow;
+        Description = description;
+        TotalDownloads= 0;
+        FirmwareVersion = firmwareVersion;
+        ModelVersion = modelVersion;
     }
 
     public ProjectVersion ChangeDescription(string description)

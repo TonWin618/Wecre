@@ -1,5 +1,6 @@
-﻿using Common.ASPNETCore;
-using Common.JWT;
+﻿using Common.JWT;
+using Common.Tools;
+using Common.ASPNETCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using MediatR;
 
 namespace Common.Initializer;
 
@@ -79,6 +81,15 @@ public static class WebApplicationBuilderExtensions
             });
         });
 
+        //MediatR
+        var assemblies = ReflectionHelper.GetAllReferencedAssemblies();
+        foreach(var assembly in assemblies)
+        {
+            Console.WriteLine("_________");
+            Console.WriteLine(assembly.FullName);
+        }
+        services.AddMediatR(assemblies.ToArray());
+
         //UnitOfWork
         services.Configure<MvcOptions>(options =>
         {
@@ -97,7 +108,10 @@ public static class WebApplicationBuilderExtensions
             }
          );
 
+        //Logging
         services.AddLogging();
+
+        //JWT
         services.Configure<JWTOptions>(configuration.GetSection("JWT"));
     }
 }

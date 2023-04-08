@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Abstractions;
+﻿using Common.Infrastructure;
+using MediatR;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +11,12 @@ using System.Transactions;
 namespace Common.ASPNETCore;
 public class UnitOfWorkFilter : IAsyncActionFilter
 {
-    private static UnitOfWorkAttribute? GetUoWAttr(ActionDescriptor actionDesc)
+    private readonly IMediator mediator;
+    public UnitOfWorkFilter(IMediator mediator)
+    {
+        this.mediator = mediator;
+    }
+    private static UnitOfWorkAttribute? GetUnitOfWorkAttribute(ActionDescriptor actionDesc)
     {
         var caDesc = actionDesc as ControllerActionDescriptor;
         if (caDesc == null)
@@ -34,7 +41,7 @@ public class UnitOfWorkFilter : IAsyncActionFilter
     public async Task OnActionExecutionAsync(ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
-        var uowAttr = GetUoWAttr(context.ActionDescriptor);
+        var uowAttr = GetUnitOfWorkAttribute(context.ActionDescriptor);
         if (uowAttr == null)
         {
             await next();
@@ -44,8 +51,6 @@ public class UnitOfWorkFilter : IAsyncActionFilter
         List<DbContext> dbCtxs = new List<DbContext>();
         foreach (var dbCtxType in uowAttr.DbContextTypes)
         {
-            //用HttpContext的RequestServices
-            //确保获取的是和请求相关的Scope实例
             var sp = context.HttpContext.RequestServices;
             DbContext dbCtx = (DbContext)sp.GetRequiredService(dbCtxType);
             dbCtxs.Add(dbCtx);
@@ -56,6 +61,10 @@ public class UnitOfWorkFilter : IAsyncActionFilter
             foreach (var dbCtx in dbCtxs)
             {
                 await dbCtx.SaveChangesAsync();
+                if(mediator!= null)
+                {
+                    await mediator.DispatchDomainEventsAsync(dbCtx);
+                }
             }
             txScope.Complete();
         }

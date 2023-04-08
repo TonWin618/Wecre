@@ -51,7 +51,6 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             }
             FirmwareVersion firmwareVersion = await repository.CreateFirmwareVersionAsync(firmwareVersionName, project);
             firmwareVersion.ChangeDescription(description);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 

@@ -42,7 +42,6 @@ namespace FileService.WebAPI.Controllers
             using Stream stream = file.OpenReadStream();
             FileItem fileItem = await domainService.UpLoadAsync(relativePath, stream, cancellationToken);
             await dbContext.AddAsync(fileItem);
-            await dbContext.SaveChangesAsync();
             return new FileUploadResponse(fileItem.FileSizeInBytes, fileItem.RemoteUrl);
         }
 

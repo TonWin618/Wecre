@@ -1,5 +1,7 @@
-﻿using IdentityService.Domain;
+﻿using Common.ASPNETCore;
+using IdentityService.Domain;
 using IdentityService.Domain.Entities;
+using IdentityService.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

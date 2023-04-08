@@ -7,6 +7,6 @@ public class FileItemConfig : IEntityTypeConfiguration<FileItem>
 {
     public void Configure(EntityTypeBuilder<FileItem> builder)
     {
-        builder.HasKey(e => e.Id).IsClustered(false);
+        builder.HasKey(e => e.Id);
     }
 }

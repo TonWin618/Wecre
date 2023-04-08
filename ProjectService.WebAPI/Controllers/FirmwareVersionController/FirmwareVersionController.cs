@@ -65,7 +65,6 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (null == firmwareVersion){ return NotFound(); }
             firmwareVersion.ChangeDescription(description);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -78,7 +77,6 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
             FirmwareVersion? firmwareVersion = await repository.GetFirmwareVerisionAsync(userName, projectName, firmwareVersionName);
             if (firmwareVersion == null) { return NotFound(); }
             domainService.DeleteFirmwareVersion(firmwareVersion);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -109,7 +107,6 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
                 }
                 firmwareVersion.Files.Add(projectFile);
             }
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -128,7 +125,6 @@ namespace ProjectService.WebAPI.Controllers.FirmwareVersionController
                 if(null == file) { return NotFound(); }
                 await domainService.RemoveFileAsync(file);
             }
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }

@@ -97,7 +97,6 @@ namespace ProjectService.WebAPI.Controllers.VersionController
             projectVersion.ChangeDescription(description)
                 .ChangeFirmwareVersion(firmwareVersion)
                 .ChangeModelVersion(modelVersion);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -111,7 +110,6 @@ namespace ProjectService.WebAPI.Controllers.VersionController
             if (projectVersion == null) { return NotFound(); }
 
             domainService.DeleteProjectVersion(projectVersion);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }

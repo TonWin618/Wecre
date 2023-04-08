@@ -49,7 +49,6 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
             }
             ModelVersion modelVersion = await repository.CreateModelVersionAsync(modelVersionName, project);
             modelVersion.ChangeDescription(description);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -64,7 +63,6 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
             ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
             if (null == modelVersion){ return NotFound(); }
             modelVersion.ChangeDescription(description);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -77,7 +75,6 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
             ModelVersion? modelVersion = await repository.GetModelVersionAsync(userName, projectName, modelVersionName);
             if (modelVersion == null) { return NotFound(); }
             domainService.DeleteModelVersion(modelVersion);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -108,7 +105,6 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
                 }
                 modelVersion.Files.Add(projectFile);
             }
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -127,7 +123,6 @@ namespace ProjectService.WebAPI.Controllers.ModelVersionController
                 if (null == file) { return NotFound(); }
                 await domainService.RemoveFileAsync(file);
             }
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }

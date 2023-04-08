@@ -1,4 +1,5 @@
-﻿using FileService.Domain;
+﻿using Common.ASPNETCore;
+using FileService.Domain;
 using FileService.Domain.Entities;
 using FileService.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [UnitOfWork(typeof(FileDbContext))]
     public class UploaderController : ControllerBase
     {
         private readonly FileDbContext dbContext;
@@ -57,7 +59,6 @@ namespace FileService.WebAPI.Controllers
             {
                 return Problem();
             }
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }

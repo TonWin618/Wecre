@@ -49,7 +49,6 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             }
 
             await repository.CreateProjectAsync(userName, projectName, description, tags);
-            //await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -67,7 +66,6 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             project.ChangeTags(tags);
 
             dbContext.Update(project);
-            //await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -81,7 +79,6 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
             if (project == null) { return NotFound(); }
 
             await domainService.DeleteProject(project);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -118,7 +115,6 @@ namespace ProjectService.WebAPI.Controllers.ProjectController
                 projectFiles.Add(projectFile);
             }
             project.ChangeReadmeFiles(projectFiles);
-            await dbContext.SaveChangesAsync();
             return Ok();
         }
 

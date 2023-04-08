@@ -12,6 +12,7 @@ namespace IdentityService.WebAPI.Controllers.User
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
+    [UnitOfWork(typeof(IdDbContext))]
     public class UserController : ControllerBase
     {
         private readonly IIdRepository repository;

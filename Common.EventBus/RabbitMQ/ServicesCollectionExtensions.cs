@@ -1,17 +1,16 @@
-﻿using Common.EventBus.RabbitMQ;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System.Reflection;
 
-namespace Common.EventBus
+namespace Common.EventBus.RabbitMQ
 {
     public static class ServicesCollectionExtensions
     {
         public static IServiceCollection AddEventBus(this IServiceCollection services, string queueName,
             params Assembly[] assemblies)
         {
-            return AddEventBus(services, queueName, assemblies.ToList());
+            return services.AddEventBus(queueName, assemblies.ToList());
         }
 
         public static IServiceCollection AddEventBus(this IServiceCollection services, string queueName,
@@ -23,7 +22,7 @@ namespace Common.EventBus
                 var types = asm.GetTypes().Where(t => t.IsAbstract == false && t.IsAssignableTo(typeof(IIntegrationEventHandler)));
                 eventHandlers.AddRange(types);
             }
-            return AddEventBus(services, queueName, eventHandlers);
+            return services.AddEventBus(queueName, eventHandlers);
         }
         public static IServiceCollection AddEventBus(this IServiceCollection services, string queueName, IEnumerable<Type> eventHandlerTypes)
         {
@@ -41,7 +40,7 @@ namespace Common.EventBus
 
                     DispatchConsumersAsync = true
                 };
-                if(optionMQ.UserName!=null)
+                if (optionMQ.UserName != null)
                 {
                     factory.UserName = optionMQ.UserName;
                 }

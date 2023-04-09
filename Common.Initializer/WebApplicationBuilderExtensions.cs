@@ -13,7 +13,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using MediatR;
 using Common.EventBus.RabbitMQ;
-using Common.EventBus;
 
 namespace Common.Initializer;
 

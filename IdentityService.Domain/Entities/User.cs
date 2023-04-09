@@ -16,7 +16,11 @@ namespace IdentityService.Domain.Entities
             Id = Guid.NewGuid();
             CreationTime = DateTime.UtcNow;
             DomainEvents = new List<INotification>();
-            ((IDomainEvents)this).AddDomainEvent(new UserCreateEvent(userName));
+        }
+
+        public void TestEvent()
+        {
+            ((IDomainEvents)this).AddDomainEvent(new TestDomainEvent(this.UserName));
         }
     }
 }

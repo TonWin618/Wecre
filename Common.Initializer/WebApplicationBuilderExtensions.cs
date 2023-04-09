@@ -12,6 +12,8 @@ using Npgsql;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using MediatR;
+using Common.EventBus.RabbitMQ;
+using Common.EventBus;
 
 namespace Common.Initializer;
 
@@ -89,6 +91,10 @@ public static class WebApplicationBuilderExtensions
             Console.WriteLine(assembly.FullName);
         }
         services.AddMediatR(assemblies.ToArray());
+
+        //RabbitMQ
+        services.Configure<IntegrationEventRabbitMQOptions>(configuration.GetSection("RabbitMQ"));
+        services.AddEventBus("test", assemblies);
 
         //UnitOfWork
         services.Configure<MvcOptions>(options =>

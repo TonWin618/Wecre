@@ -1,3 +1,4 @@
+using Common.EventBus;
 using Common.Initializer;
 using Common.JWT;
 using IdentityService.Domain;
@@ -58,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseEventBus();
 app.UseCors();
 app.UseCors("CosPolicy");
 app.UseHttpsRedirection();

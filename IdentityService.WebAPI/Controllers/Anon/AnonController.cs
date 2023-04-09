@@ -75,6 +75,10 @@ public class AnonController : ControllerBase
         (var checkResult, var token) = await domainService.LoginByUserNameAndPwdAsync(req.UserName, req.Password);
         if (checkResult.Succeeded)
         {
+            //integration event test code
+            var user  = await repository.FindByNameAsync(req.UserName);
+            user.TestEvent();
+            //integration event test code
             return token;
         }
         else if (checkResult.IsLockedOut)

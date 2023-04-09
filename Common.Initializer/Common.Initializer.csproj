@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.ASPNETCore\Common.ASPNETCore.csproj" />
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Common.EventBus\Common.EventBus.csproj" />
     <ProjectReference Include="..\Common.JWT\Common.JWT.csproj" />
     <ProjectReference Include="..\Common.Tools\Common.Tools.csproj" />
   </ItemGroup>

@@ -1,85 +1,80 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue';
+import SearchBar from './components/SearchBar.vue';
+var selectedKeys = ref<string[]>(['']);
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <a-layout>
+    <a-layout-header>
+      <div class="header-logo">
+        <span>We</span>
+      </div>
+      <div class="header-search">
+        <SearchBar />
+      </div>
+      <div class="header-menu">
+        <a-menu
+        @selectedKeys="selectedKeys"
+        mode="horizontal"
+        theme="dark"
+        selectable=false
+        triggerSubMenuAction="click"
+        >
+          <a-menu-item key="1">
+            <RouterLink to="/">Home</RouterLink>
+          </a-menu-item>
+          <a-menu-item key="2">
+            <RouterLink to="/test">Test</RouterLink>
+          </a-menu-item>
+        </a-menu>
+      </div>
+      <div class="header-right">
+        <a-space>
+          <RouterLink to="/login">
+            <a-button ghost>Login
+            </a-button>
+          </RouterLink>
+          <a-divider type="vertical" />
+          <RouterLink to="/signUp">
+            <a-button ghost>
+              Sign up
+            </a-button>
+          </RouterLink>
+          
+        </a-space>
+      </div>
+    </a-layout-header>
+    <a-layout-content>
+      <RouterView />
+    </a-layout-content>
+  </a-layout>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+
+.header-logo{
+  color: #ffffff;
+  font-size:x-large;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.header-search{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
 }
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.ant-layout{
+  height: 100%;
 }
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.ant-layout-header{
+  display: flex;
+  color: #ffffff;
 }
 </style>

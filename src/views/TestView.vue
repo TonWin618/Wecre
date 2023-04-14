@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Test from '@/components/ProjectList.vue';
+import Test from '@/components/Home/ProjectNameList.vue';
 </script>
 
 <template>

@@ -3,10 +3,10 @@
       <template #renderItem="{ item }">
         <a-list-item>
           <a-list-item-meta
-            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+            description="Ant Design, a design language for background applications"
           >
             <template #title>
-              <a href="https://www.antdv.com/">{{ item.title }}</a>
+              <a v-bind:href= "`/TonWin/${item.title}`">{{ item.title }}</a>
             </template>
             <template #avatar>
               <a-avatar src="https://p.qqan.com/up/2021-7/16267471499300276.jpg" />
@@ -33,6 +33,9 @@
     },
     {
       title: 'Ant Design Title 4',
+    },
+    {
+      title: 'Ant Design Title 4 - Ant Design Title 4909009090',
     },
   ];
   export default defineComponent({

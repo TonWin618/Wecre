@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <a-layout-sider width="350px">
-      <ProjectList/>
+      <ProjectNameList/>
     </a-layout-sider>
     <a-layout>
       <a-layout-content>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import Footer from '@/components/Footer.vue';
-import ProjectList from '@/components/ProjectList.vue';
+import ProjectNameList from '@/components/Home/ProjectNameList.vue';
 </script>
 
 <style scoped>

@@ -2,8 +2,8 @@
     <a-layout>
       <a-layout-header>
         <a-breadcrumb>
-            <a-breadcrumb-item class="user-name"><a href="/TonWin">{{$route.params.name}}</a></a-breadcrumb-item>
-            <a-breadcrumb-item class="project-name"><a href="/TonWin/test-project">{{$route.params.project}}</a></a-breadcrumb-item>
+            <a-breadcrumb-item class="user-name"><a :href="`/${$route.params.name}`">{{$route.params.name}}</a></a-breadcrumb-item>
+            <a-breadcrumb-item class="project-name"><a :href="`/${$route.params.name}/${$route.params.project}`">{{$route.params.project}}</a></a-breadcrumb-item>
         </a-breadcrumb>
       </a-layout-header>
       <a-layout-content>

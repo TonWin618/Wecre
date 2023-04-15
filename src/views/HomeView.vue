@@ -1,17 +1,17 @@
 <template>
-  <a-layout>
-    <a-layout-sider width="350px">
-      <ProjectNameList/>
-    </a-layout-sider>
     <a-layout>
-      <a-layout-content>
-        
-      </a-layout-content>
-      <a-layout-footer>
-        <Footer/>
-      </a-layout-footer>
+        <a-layout-sider width="350px">
+            <ProjectNameList />
+        </a-layout-sider>
+        <a-layout>
+            <a-layout-content>
+
+            </a-layout-content>
+            <a-layout-footer>
+                <Footer />
+            </a-layout-footer>
+        </a-layout>
     </a-layout>
-  </a-layout>
 </template>
 
 <script setup lang="ts">
@@ -20,19 +20,21 @@ import ProjectNameList from '@/components/Home/ProjectNameList.vue';
 </script>
 
 <style scoped>
-.ant-layout{
-  width: 100%;
-  margin: 0;
+.ant-layout {
+    width: 100%;
+    margin: 0;
 }
-.ant-layout-sider{
-  height: 100%;
-  padding: 10px;
-  border-right: 1px solid #D0D7DE;
-  background-color: #ffffff;
+
+.ant-layout-sider {
+    height: 100%;
+    padding: 10px;
+    border-right: 1px solid #D0D7DE;
+    background-color: #ffffff;
 }
-.ant-layout-content{
-  margin: 0;
-  height: 100%;
-  width: 100%;
+
+.ant-layout-content {
+    margin: 0;
+    height: 100%;
+    width: 100%;
 }
 </style>

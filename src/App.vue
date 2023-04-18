@@ -9,7 +9,7 @@ var selectedKeys = ref<string[]>(['']);
   <a-layout>
     <a-layout-header>
       <div class="header-logo">
-        <span>We</span>
+        <img src="wecre.png" width="60"/>
       </div>
       <div class="header-search">
         <SearchBar />

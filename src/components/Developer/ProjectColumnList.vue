@@ -23,7 +23,7 @@
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
 const listData: Record<string, string>[] = [];
 
-for (let i = 0; i < 23; i++) {
+for (let i = 0; i < 230; i++) {
     listData.push({
         href: `/tonwin/test-project${i}`,
         title: `test-project${i}`,

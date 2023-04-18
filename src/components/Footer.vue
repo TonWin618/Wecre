@@ -5,7 +5,8 @@
     <p>Created by TonWin 2023.3.17</p>
   </div>
 </template>
-
+<script setup lang="ts">
+</script>
 <style scoped>
 .footer{
   text-align: center;

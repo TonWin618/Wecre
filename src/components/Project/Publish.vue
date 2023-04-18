@@ -1,16 +1,40 @@
 <template>
-    <a-timeline>
-        <a-timeline-item>
-                <a-card title="V1.0.1 Alpha" style="width: 600px">
-                    <template #extra><a href="#">more</a></template>
-                    <p>1. Solve initial network problems 2015-09-01</p>
-                    <p>2. Technical testing 2015-09-01</p>
-                    <p>3. ard content</p>
-                </a-card>
-                <br />
-        </a-timeline-item>
-        <a-timeline-item>Solve initial network problems 2015-09-01</a-timeline-item>
-        <a-timeline-item>Technical testing 2015-09-01</a-timeline-item>
-        <a-timeline-item>Network problems being solved 2015-09-01</a-timeline-item>
-    </a-timeline>
-</template>  
+    <h1>README.md</h1>
+    <div style="width: 800px;border: 1.5px solid #D0D7DE;border-radius: 8px;padding: 20px;">
+        <div v-html="markdownToHtml"></div>
+    </div>
+    <Footer></Footer>
+</template>
+
+<script setup lang="ts">
+import axios from 'axios';
+import { marked } from 'marked';
+import { ref, shallowRef } from 'vue';
+import Footer from '../Footer.vue';
+
+const render = new marked.Renderer;
+marked.setOptions({
+    renderer: render,
+    gfm: true,
+    pedantic: false,
+    sanitize: false
+})
+
+const markdown = ref('');
+const markdownToHtml = shallowRef('');
+axios.get("https://raw.githubusercontent.com/TonWin618/wecre-frontend/master/README.md").then(
+    response => {
+        markdown.value = response.data
+        markdownToHtml.value = marked(markdown.value);
+    }
+)
+
+</script>
+
+<style>
+h1{
+    font-size: 2em;
+}
+/* https://raw.githubusercontent.com/TonWin618/wecre-frontend/master/README.md */
+</style>
+  

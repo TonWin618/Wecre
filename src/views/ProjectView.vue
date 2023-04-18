@@ -31,31 +31,41 @@
                 </a-menu>
             </div>
             <div style="width: 100%;display: flex;align-items: center;margin: 0 0;padding-left: 200px;">
+                <a-space>
                 <span style="font-size: 18px;color: black;">version</span>
                 <a-select v-model:value="value" show-search placeholder="Select a version" style="width: 200px"
                     :options="options" :filter-option="filterOption" @focus="handleFocus" @blur="handleBlur"
                     @change="handleChange"></a-select>
+                <a @click='ShowHistory'>
+                    <HistoryOutlined style="color: black;"/>
+                </a>
+            </a-space>
             </div>
         </a-layout-header>
         <a-layout-content>
             <div style="margin: 20px 100px;">
-                <Publish v-if="current[0]==='publish'"/>
+                <Publish v-if="current [0]==='publish'"/>
                 <Replay v-if="current[0] === 'comments'" />
                 <Comments v-if="current[0] === 'comments'" />
+                <History v-if="current[0] === 'history'"/>
             </div>
         </a-layout-content>
     </a-layout>
 </template>
     
 <script setup lang="ts" scoped>
-import { BookOutlined, CodepenOutlined, StarOutlined, FileOutlined, FileZipOutlined, CommentOutlined } from '@ant-design/icons-vue';
+import { CodepenOutlined, StarOutlined, FileOutlined, FileZipOutlined, CommentOutlined, HistoryOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
+
+import Publish from '@/components/Project/Publish.vue'; 
 import Comments from '@/components/Project/Comments.vue'
 import Replay from '@/components/Project/Replay.vue';
-import Publish from '@/components/Project/Publish.vue'
+import History from '@/components/Project/History.vue';
 
-
+function ShowHistory(){
+    current.value[0] = 'history'
+}
 const current = ref<string[]>(['publish']);
 const options = ref<SelectProps['options']>([
     { value: 'V1.01', label: 'V1.01' },

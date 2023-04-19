@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homeview from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import SignUpView from '../views/SignUpView.vue'
-import TestView from '../components/Developer/ProjectColumnList.vue'
+import TestView from '../components/Project/Publish/Overview.vue'
 import DeveloperView from '../views/DeveloperView.vue'
 import ProjectView from '../views/ProjectView.vue'
 const router = createRouter({

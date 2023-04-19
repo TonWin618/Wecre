@@ -44,7 +44,7 @@
         </a-layout-header>
         <a-layout-content>
             <div style="margin: 20px 100px;">
-                <Publish v-if="current [0]==='publish'"/>
+                <Readme v-if="current [0]==='publish'"/>
                 <Replay v-if="current[0] === 'comments'" />
                 <Comments v-if="current[0] === 'comments'" />
                 <History v-if="current[0] === 'history'"/>
@@ -58,10 +58,10 @@ import { CodepenOutlined, StarOutlined, FileOutlined, FileZipOutlined, CommentOu
 import { ref } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 
-import Publish from '@/components/Project/Publish.vue'; 
-import Comments from '@/components/Project/Comments.vue'
-import Replay from '@/components/Project/Replay.vue';
-import History from '@/components/Project/History.vue';
+import Readme from '@/components/Project/Publish/Readme.vue'; 
+import Comments from '@/components/Project/Comments/Comments.vue';
+import Replay from '@/components/Project/Comments/Replay.vue';
+import History from '@/components/Project/History/History.vue';
 
 function ShowHistory(){
     current.value[0] = 'history'

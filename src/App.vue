@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue';
-import SearchBar from './components/SearchBar.vue'
+import SearchBar from './components/Public/SearchBar.vue'
 var selectedKeys = ref<string[]>(['']);
 </script>
 

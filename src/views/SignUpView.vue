@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SignUp from '@/components/SignUp.vue';
-import Footer from '@/components/Footer.vue';
+import Footer from '@/components/Public/Footer.vue';
 </script>
 
 <template>

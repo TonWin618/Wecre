@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import Footer from '@/components/Footer.vue';
+import Footer from '@/components/Public/Footer.vue';
 import ProjectNameList from '@/components/Home/ProjectNameList.vue';
 </script>
 

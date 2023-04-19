@@ -1,6 +1,6 @@
 <template>
     <h1>README.md</h1>
-    <div style="width: 800px;border: 1.5px solid #D0D7DE;border-radius: 8px;padding: 20px;">
+    <div style="width: 800px;border: 1.5px solid #D0D7DE;border-radius: 0.8rem;padding: 1.2rem;">
         <div v-html="markdownToHtml"></div>
     </div>
     <Footer></Footer>
@@ -10,7 +10,7 @@
 import axios from 'axios';
 import { marked } from 'marked';
 import { ref, shallowRef } from 'vue';
-import Footer from '../Footer.vue';
+import Footer from '../../Public/Footer.vue';
 
 const render = new marked.Renderer;
 marked.setOptions({

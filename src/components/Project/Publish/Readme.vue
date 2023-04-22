@@ -30,10 +30,10 @@ axios.get("https://raw.githubusercontent.com/TonWin618/wecre-frontend/master/REA
 
 </script>
 
-<style>
+<style lang="less" scoped>
 .markdown {
     width: 800px;
-    border: 1px solid #D0D7DE;
+    border: 1px solid @border-color-base;
     border-radius: 0.8rem;
     padding: 1.2rem;
 }

@@ -1,7 +1,6 @@
 <template>
     <a-layout>
-        <a-layout-header
-            style="background-color:#f0f2f5;align-items: center;border-bottom: 1px solid #D0D7DE;height: 65px;">
+        <a-layout-header>
             <div class="header-row1" style="width: 100%;">
                 <a-breadcrumb>
                     <a-breadcrumb-item class="user-name"><a :href="`/${$route.params.name}`">{{ $route.params.name
@@ -11,7 +10,7 @@
                 </a-breadcrumb>
             </div>
             <div class="header-row2" style="width: 100%;">
-                <a-menu v-model:selectedKeys="current" mode="horizontal" style="background-color: #f0f2f5;">
+                <a-menu v-model:selectedKeys="current" mode="horizontal">
                     <a-menu-item key="publish">
                         <FileOutlined />
                         Publish
@@ -30,7 +29,7 @@
                     </a-menu-item>
                 </a-menu>
             </div>
-            <div style="width: 100%;display: flex;align-items: center;margin: 0 0;padding-left: 200px;">
+            <div class="header-version-form" style="">
                 <a-space>
                 <span style="font-size: 18px;color: black;">version</span>
                 <a-select v-model:value="value" show-search placeholder="Select a version" style="width: 200px"
@@ -86,18 +85,28 @@ const filterOption = (input: string, option: any) => {
     return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 </script>
-<style scoped>
-.user-name {
-    font-size: 32px;
+<style lang="less" scoped>
+.user-name a {
+    font-size: 20px;
     font-style: normal;
-    color: #ffffff;
+    color: @link-color;
 }
 
-.project-name {
-    font-size: 32px;
-    font-weight: bold;
+.project-name a {
+    font-size: 20px;
+    font-weight: bolder;
+    color: @link-color !important;
 }
-
+.header-version-form{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 0;
+    padding-left: 200px;
+}
+.header-version-form .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+    background-color: white;
+}
 .ant-layout {
     width: 100%;
     margin: 0;
@@ -105,21 +114,23 @@ const filterOption = (input: string, option: any) => {
 
 .ant-layout-header {
     display: flex;
-    color: #ffffff;
-    background-color: #ffffff;
+    align-items: center;
+    border-bottom: 1px solid @border-color-base;
+    background-color: @component-background;
+    height: 65px;
 }
 
 .ant-layout-sider {
     height: 100%;
     padding: 10px;
     text-align: center;
-    background-color: #ffffff;
+    background-color: red;
 }
 
 .ant-layout-content {
     margin: 0;
     height: 100%;
     width: 100%;
-    background-color: #ffffff;
+    background-color: white;
 }
 </style>

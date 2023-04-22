@@ -3,14 +3,25 @@
         <template #renderItem="{ item }">
             <a-list-item key="item.title">
                 <template #actions>
-                    <span v-for="{ type, text } in actions" :key="type">
-                        <component :is="type" style="margin-right: 8px" />
-                        {{ text }}
-                    </span>
+                    <div>
+                        <DownloadOutlined />
+                        <span> {{ item.downloads }}</span>
+                    </div>
+                    <div>
+                        <StarOutlined />
+                        <span> {{ item.star }}</span>
+                    </div>
+                    <span>Updated 3 years ago</span>
                 </template>
-                <a-list-item-meta :description="item.description">
+                <a-list-item-meta>
                     <template #title>
                         <a style="font-size: 24px;" :href="item.href">{{ item.title }}</a>
+                    </template>
+                    <template #description>
+                        <p>{{ item.description }}</p>
+                        <div class="card-tags">
+                            <a-tag v-for="(tag, index) in item.tags" :key="index">#{{ tag }}</a-tag>
+                        </div>
                     </template>
                 </a-list-item-meta>
                 {{ item.content }}
@@ -20,18 +31,18 @@
 </template>
 
 <script setup lang="ts">
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+import { StarOutlined, LikeOutlined, MessageOutlined, DownloadOutlined } from '@ant-design/icons-vue';
 const listData: Record<string, string>[] = [];
 
 for (let i = 0; i < 230; i++) {
     listData.push({
         href: `/tonwin/test-project${i}`,
         title: `test-project${i}`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
+        downloads: '1,760,219',
+        star: '157',
         description:
             'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-        content:
-            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+        tags:['C++','vue','antd']
     });
 }
 
@@ -41,27 +52,9 @@ const pagination = {
     },
     pageSize: 5,
 };
-const actions: Record<string, string>[] = [
-    { type: 'StarOutlined', text: '156' },
-    { type: 'LikeOutlined', text: '156' },
-    { type: 'MessageOutlined', text: '2' },
-];
-
-const MyComponent = {
-    components: {
-        StarOutlined,
-        LikeOutlined,
-        MessageOutlined,
-    },
-    setup() {
-        return {
-            listData,
-            pagination,
-            actions,
-        };
-    },
-};
 </script>
+
+<style lang="less" scoped></style>
 
 
   

@@ -35,8 +35,7 @@ const submit = async () => {
 
 <style scoped>
 .login-form{
-  width: 400px;
-  padding: 30px;
+  width: 300px;
 }
 .login-item{
   margin-top: 10px;

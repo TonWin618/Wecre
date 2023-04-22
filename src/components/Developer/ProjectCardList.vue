@@ -1,11 +1,10 @@
 <template>
-    <h1>Projects</h1>
+    <p>Popular Projects</p>
     <div class="card-container">
         <div class="card-row" v-for="(row, index) in cardRows()" :key="index">
-            <a-card v-for="(card, index) in row" :key="index" class="card-item">
-                <a style="font-size: 20px;" :href="`/tonwin/${card.title}`" slot="title">{{ card.title }}</a>
+            <a-card class="card-item" v-for="(card, index) in row" :key="index" >
+                <a href="`/tonwin/${card.title}`" slot="title">{{ card.title }}</a>
                 <p>{{ card.description }}</p>
-
                 <div class="card-tags">
                     <a-tag v-for="(tag, index) in card.tags" :key="index">#{{ tag }}</a-tag>
                 </div>
@@ -29,7 +28,7 @@ const cardList: Card[] = [
         title: 'Card 1',
         link: '/card-1',
         description: 'This is the first card',
-        tags: ['Tag A', 'Tag B']
+        tags: ['Vue', 'Axios']
     },
     {
         title: 'Card 2',
@@ -54,6 +53,12 @@ const cardList: Card[] = [
         link: '/card-5',
         description: 'This is the fifth card',
         tags: ['Tag I', 'Tag J']
+    },
+    {
+        title: 'Card 6',
+        link: '/card-6',
+        description: 'This is the fourth card',
+        tags: ['Tag G', 'Tag H']
     }
 ]
 
@@ -76,37 +81,26 @@ defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .ant-card-body{
-    padding: 5px;
+    padding: 0px !important;
 }
-
-.card-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
 .card-row {
     display: flex;
     justify-content: left;
     margin-bottom: 5px;
     width: 100%;
 }
-
 .card-item {
     width: 400px;
     height: 120px;
+    padding: 0px;
     margin-bottom: 5px;
-}
-
-.card-item:not(:last-child) {
     margin-right: 10px;
+    background-color: @white;
 }
-
-
-
-.card-tags span {
-    background-color: #eee;
+.card-item a{
+    font-size: 14px;
+    font-weight: bolder;
 }
 </style>

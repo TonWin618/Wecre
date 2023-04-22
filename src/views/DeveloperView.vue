@@ -41,35 +41,32 @@ import { ref } from 'vue';
 
 const current = ref<string[]>(['overview']);
 </script>
-<style scoped>
+<style lang="less" scoped>
 .ant-layout {
-    width: 100%;
+    max-width: 100%;
+    padding-top: 10px;
     padding-left: 10%;
     padding-right: 10%;
-    background-color: #ffffff;
+    background-color: @white;
 }
 
 .ant-layout-header {
-    background-color: #ffffff;
     padding: 0 0;
     margin-bottom: 10px;
+    background-color: @white;
 }
-
 .ant-layout-sider {
     height: 100%;
     padding: 10px;
     text-align: center;
-    background-color: #ffffff;
+    background-color: @white;
 }
-
 .ant-layout-content {
     margin: 0;
     height: 100%;
     width: 100%;
-    background-color: #ffffff;
 }
-
-a-menu-item{
-    width: 180px;
+.ant-menu{
+    background-color:@white;
 }
 </style>

@@ -9,7 +9,7 @@ var selectedKeys = ref<string[]>(['']);
   <a-layout>
     <a-layout-header>
       <div class="header-logo">
-        <img src="wecre.png" width="60"/>
+        <img src="wecre.png" width="48"/>
       </div>
       <div class="header-search">
         <SearchBar />
@@ -52,10 +52,9 @@ var selectedKeys = ref<string[]>(['']);
   </a-layout>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 
 .header-logo{
-  color: #ffffff;
   font-size:x-large;
 }
 .header-search{
@@ -70,11 +69,15 @@ var selectedKeys = ref<string[]>(['']);
   justify-content: flex-end;
   flex-grow: 1;
 }
+.ant-menu.ant-menu-dark, .ant-menu-dark .ant-menu-sub, .ant-menu.ant-menu-dark .ant-menu-sub {
+     background: @heading-color !important;
+}
+
 .ant-layout{
   height: 100%;
 }
 .ant-layout-header{
   display: flex;
-  color: #ffffff;
+  background-color: @heading-color;
 }
 </style>

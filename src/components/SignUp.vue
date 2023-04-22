@@ -47,8 +47,7 @@
 
 <style scoped>
 .signUp-form{
-  width: 400px;
-  padding: 30px;
+  max-width: 300px;
 }
 .signup-item{
   margin-top: 10px;

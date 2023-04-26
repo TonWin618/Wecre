@@ -30,6 +30,7 @@
             <ProjectColumnList v-if="current[0] === 'projects'"/>
         </a-layout-content>
     </a-layout>
+    <Footer style="background-color: white;"></Footer>
 </template>
   
 <script setup lang="ts">
@@ -38,12 +39,12 @@ import ProjectCardList from '@/components/Developer/ProjectCardList.vue';
 import Profile from '@/components/Developer/Profile.vue';
 import { EyeOutlined,BookOutlined,ClockCircleOutlined,StarOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
+import Footer from '@/components/Public/Footer.vue';
 
 const current = ref<string[]>(['overview']);
 </script>
 <style lang="less" scoped>
 .ant-layout {
-    max-width: 100%;
     padding-top: 10px;
     padding-left: 10%;
     padding-right: 10%;
@@ -61,10 +62,8 @@ const current = ref<string[]>(['overview']);
     text-align: center;
     background-color: @white;
 }
-.ant-layout-content {
-    margin: 0;
-    height: 100%;
-    width: 100%;
+.ant-layout-footer{
+    background-color: @white;
 }
 .ant-menu{
     background-color:@white;

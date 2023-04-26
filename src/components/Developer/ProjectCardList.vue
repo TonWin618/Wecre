@@ -3,7 +3,7 @@
     <div class="card-container">
         <div class="card-row" v-for="(row, index) in cardRows()" :key="index">
             <a-card class="card-item" v-for="(card, index) in row" :key="index" >
-                <a href="`/tonwin/${card.title}`" slot="title">{{ card.title }}</a>
+                <a :href="`/tonwin/${card.title}`" slot="title">{{ card.title }}</a>
                 <p>{{ card.description }}</p>
                 <div class="card-tags">
                     <a-tag v-for="(tag, index) in card.tags" :key="index">#{{ tag }}</a-tag>

@@ -1,7 +1,7 @@
 <template>
     <a-comment>
         <template #avatar>
-            <a-avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+            <a-avatar src="https://img.zcool.cn/community/0124d757b569550000012e7ed8be82.png@1280w_1l_2o_100sh.png" alt="Han Solo" />
         </template>
         <template #content>
             <a-form-item>
@@ -48,7 +48,7 @@ export default defineComponent({
                 comments.value = [
                     {
                         author: 'Han Solo',
-                        avatar: 'https://joeschmoe.io/api/v1/random',
+                        avatar: 'https://img.zcool.cn/community/0124d757b569550000012e7ed8be82.png@1280w_1l_2o_100sh.png',
                         content: value.value,
                         datetime: dayjs().fromNow(),
                     },

@@ -43,8 +43,7 @@
         <a-layout-content>
             <div style="margin: 20px 100px;">
                 <PublishContainer v-if="current [0]==='publish'"/>
-                <Replay v-if="current[0] === 'comments'" />
-                <Comments v-if="current[0] === 'comments'" />
+                <CommentsContainer v-if="current[0] === 'comments'" />
                 <History v-if="current[0] === 'history'"/>
                 <FirmwaresContainer v-if="current[0]=== 'firmwares'" />
                 <ModelsContainer v-if="current[0] === 'models'"/>
@@ -58,12 +57,11 @@ import { CodepenOutlined, FileOutlined, FileZipOutlined, CommentOutlined, Histor
 import { ref } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 
-import Comments from '@/components/Project/Comments/Comments.vue';
-import Replay from '@/components/Project/Comments/Replay.vue';
 import History from '@/components/Project/History/History.vue';
 import PublishContainer from '@/containers/PublishContainer.vue';
 import FirmwaresContainer from '@/containers/FirmwaresContainer.vue';
 import ModelsContainer from '@/containers/ModelsContainer.vue';
+import CommentsContainer from '@/containers/CommentsContainer.vue';
 
 function ShowHistory(){
     current.value[0] = 'history'

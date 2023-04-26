@@ -1,9 +1,9 @@
 <template>
-    <div class="firmware-form">
+    <div class="model-form">
         <a-list item-layout="horizontal" :data-source="data">
             <template #renderItem="{ item }">
                 <a-list-item>
-                    <a-list-item-meta class="firmware-item">
+                    <a-list-item-meta class="model-item">
                         <template #title>
                             <div class="item-title">
                                 <a href="https://www.antdv.com/">{{ item.title }}</a>
@@ -21,7 +21,7 @@
                             <p>English word learning equipment based on stm32</p>
                             <div class="item-footer">
                                 <div class="downloads">
-                                    <a-statistic value="11293221" :value-style="{ 'font-size': '14px', 'color': '#656D76' }">
+                                    <a-statistic value="299320" :value-style="{ 'font-size': '14px', 'color': '#656D76' }">
                                         <template #prefix>
                                             <DownloadOutlined />
                                         </template>
@@ -29,7 +29,7 @@
                                 </div>
                                 <a-divider type="vertical" />
                                 <div>
-                                    <span>11.57MB</span>
+                                    <span>6.32MB</span>
                                 </div>
                                 <a-divider type="vertical" />
                                 <div class="uploader">
@@ -56,28 +56,28 @@ interface DataItem {
 }
 const data: DataItem[] = [
     {
-        title: 'memocard-stm32f103.o',
+        title: 'memocard-green.obj',
     },
     {
-        title: 'memocard-stm32f407.o',
+        title: 'memocard-red.obj',
     },
     {
-        title: 'memocard-stm32f108.o',
+        title: 'memocard-blue.obj',
     },
     {
-        title: 'memocard-stm32f405.o',
+        title: 'memocard-black.obj',
     },
 ];
 </script>
   
 <style lang="less" scoped>
-.firmware-form {
+.model-form {
     width: 600px;
     border: 1px solid @border-color-base;
     border-radius: @border-radius-base;
 }
 
-.firmware-item {
+.model-item {
     margin: 5px 20px;
     display: flex;
 }

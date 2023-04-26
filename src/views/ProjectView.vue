@@ -46,7 +46,8 @@
                 <Replay v-if="current[0] === 'comments'" />
                 <Comments v-if="current[0] === 'comments'" />
                 <History v-if="current[0] === 'history'"/>
-                <FirmwareList v-if="current[0]=== 'firmwares'" />
+                <FirmwaresContainer v-if="current[0]=== 'firmwares'" />
+                <ModelsContainer v-if="current[0] === 'models'"/>
             </div>
         </a-layout-content>
     </a-layout>
@@ -61,7 +62,8 @@ import Comments from '@/components/Project/Comments/Comments.vue';
 import Replay from '@/components/Project/Comments/Replay.vue';
 import History from '@/components/Project/History/History.vue';
 import PublishContainer from '@/containers/PublishContainer.vue';
-import FirmwareList from '@/components/Project/Firmwares/FirmwareList.vue';
+import FirmwaresContainer from '@/containers/FirmwaresContainer.vue';
+import ModelsContainer from '@/containers/ModelsContainer.vue';
 
 function ShowHistory(){
     current.value[0] = 'history'

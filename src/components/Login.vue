@@ -8,29 +8,18 @@
             <a-typography-text>Password</a-typography-text>
             <a-input-password type="password" id="password" v-model="password" required />
         </div>
-        <a-button class="login-button" type="primary" @click.prevent="submit">Login</a-button>
+        <a-button class="login-button" type="primary" @click.prevent="authStore.loginWithUsername(username,password)">Login</a-button>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+const username = ref('')
+const password = ref('')
+const authStore = useAuthStore();
 
-const username = ref('');
-const password = ref('');
 
-const submit = async () => {
-    try {
-        const response = await axios.post('/api/login', {
-            username: username.value,
-            password: password.value,
-        });
-
-        console.log(response.data); // Do something with the response data
-    } catch (error) {
-        console.error(error);
-    }
-};
 </script>
 
 <style lang="less" scoped>

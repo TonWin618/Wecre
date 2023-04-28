@@ -22,7 +22,7 @@
 import Comments from '@/components/Project/Comments/Comments.vue';
 import Replay from '@/components/Project/Comments/Replay.vue';
 import { ref } from 'vue';
-import { Dayjs } from 'dayjs';
+import type { Dayjs } from 'dayjs';
 
 const value = ref();
 const onPanelChange = (value: Dayjs, mode: string) => {

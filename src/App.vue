@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { ref } from 'vue';
-import SearchBar from './components/Public/SearchBar.vue'
-var selectedKeys = ref<string[]>(['']);
-</script>
-
 <template>
     <a-layout>
         <a-layout-header>
@@ -26,19 +19,20 @@ var selectedKeys = ref<string[]>(['']);
                 </a-menu>
             </div>
             <div class="header-right">
-                <a-space>
-                    <RouterLink to="/login">
-                        <a-button ghost>Login
-                        </a-button>
-                    </RouterLink>
-                    <a-divider type="vertical" />
-                    <RouterLink to="/signUp">
-                        <a-button ghost>
-                            Sign up
-                        </a-button>
-                    </RouterLink>
-
-                </a-space>
+                <div v-if="!authStore.isLoggedIn">
+                    <a-space>
+                        <RouterLink to="/login">
+                            <a-button ghost>Login
+                            </a-button>
+                        </RouterLink>
+                        <a-divider type="vertical" />
+                        <RouterLink to="/signUp">
+                            <a-button ghost>
+                                Sign up
+                            </a-button>
+                        </RouterLink>
+                    </a-space>
+                </div>
             </div>
         </a-layout-header>
         <a-layout-content>
@@ -46,6 +40,16 @@ var selectedKeys = ref<string[]>(['']);
         </a-layout-content>
     </a-layout>
 </template>
+
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue';
+import SearchBar from './components/Public/SearchBar.vue'
+import { useAuthStore } from './stores/auth';
+
+const authStore = useAuthStore()
+var selectedKeys = ref<string[]>(['']);
+</script>
 
 <style lang="less" scoped>
 .header-logo {
@@ -64,12 +68,6 @@ var selectedKeys = ref<string[]>(['']);
     align-items: center;
     justify-content: flex-end;
     flex-grow: 1;
-}
-
-.ant-menu.ant-menu-dark,
-.ant-menu-dark .ant-menu-sub,
-.ant-menu.ant-menu-dark .ant-menu-sub {
-    background: @heading-color !important;
 }
 
 .ant-layout {

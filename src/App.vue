@@ -1,12 +1,17 @@
 <template>
-    <a-layout>
-        <a-layout-header>
+    <a-row class="header" type="flex" align="middle">
+        <a-col :span="1"></a-col>
+        <a-col :span="1">
             <div class="header-logo">
                 <img src="https://i.postimg.cc/3wzpbsz1/wecre.png" width="48" />
             </div>
+        </a-col>
+        <a-col :span="5">
             <div class="header-search">
                 <SearchBar />
             </div>
+        </a-col>
+        <a-col :span="12">
             <div class="header-menu">
                 <a-menu @selectedKeys="selectedKeys" mode="horizontal" theme="dark" selectable=false
                     triggerSubMenuAction="click">
@@ -18,6 +23,8 @@
                     </a-menu-item>
                 </a-menu>
             </div>
+        </a-col>
+        <a-col :span="4">
             <div class="header-right">
                 <div v-if="!authStore.isLoggedIn">
                     <a-space>
@@ -34,11 +41,12 @@
                     </a-space>
                 </div>
             </div>
-        </a-layout-header>
-        <a-layout-content>
-            <RouterView />
-        </a-layout-content>
-    </a-layout>
+        </a-col>
+        <a-col :span="1"></a-col>
+    </a-row>
+    <a-row>
+        <RouterView/>
+    </a-row>
 </template>
 
 <script setup lang="ts">
@@ -52,30 +60,8 @@ var selectedKeys = ref<string[]>(['']);
 </script>
 
 <style lang="less" scoped>
-.header-logo {
-    font-size: x-large;
-}
-
-.header-search {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 15px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-grow: 1;
-}
-
-.ant-layout {
-    height: 100%;
-}
-
-.ant-layout-header {
-    display: flex;
+.header {
+    height: 60px;
     background-color: @heading-color;
 }
 </style>

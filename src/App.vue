@@ -45,7 +45,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue';
 import SearchBar from './components/Public/SearchBar.vue'
-import { useAuthStore } from './stores/auth';
+import { useAuthStore } from './store/auth';
 
 const authStore = useAuthStore()
 var selectedKeys = ref<string[]>(['']);

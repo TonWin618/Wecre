@@ -3,16 +3,8 @@
         <a-list item-layout="vertical" size="large" :data-source="listData">
             <template #renderItem="{ item }">
                 <a-list-item key="item.title">
-                    <template v-if="!loading" #actions>
-                        <span v-for="{ type, text } in actions" :key="type">
-                            <component is="star-outlined" style="margin-right: 8px"></component>
-                            {{ text }}
-                        </span>
-                    </template>
-
                     <div class="projects-item">
                     <a-skeleton :loading="loading" active avatar>
-                        
                             <a-list-item-meta>
                                 <template #title>
                                     <a :href="item.href">{{ item.title }}</a>
@@ -35,6 +27,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+
 interface DataItem {
     href: string;
     title: string;
@@ -42,7 +35,9 @@ interface DataItem {
     description: string;
     content: string;
 }
+
 const listData: DataItem[] = [];
+
 for (let i = 0; i < 7; i++) {
     listData.push({
         href: 'https://www.antdv.com/',
@@ -56,12 +51,6 @@ for (let i = 0; i < 7; i++) {
 }
 
 const loading = ref<boolean>(true);
-
-const actions = [
-    { type: 'star-outlined', text: '156' },
-    { type: 'like-outlined', text: '156' },
-    { type: 'message-outlined', text: '2' },
-];
 </script>
 
 <style scoped lang="less">
@@ -70,6 +59,7 @@ const actions = [
     border-radius: @border-radius-base;
     border: 1px solid @border-color-base;
     background-color: @white;
+    box-shadow: 0px 3px 6px fade(@border-color-base,50%)
 }
 .ant-list-split .ant-list-item{
     border: 0px;

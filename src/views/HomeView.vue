@@ -6,7 +6,7 @@
         <a-layout>
             <a-layout-content>
                 <h1>Recommend</h1>
-                <RecommendProjects/>
+                <RecommendProjects />
             </a-layout-content>
             <a-layout-footer>
                 <Footer></Footer>
@@ -37,14 +37,12 @@ import RecommendProjects from '@/components/Home/RecommendProjects.vue';
 
 .ant-layout-content {
     margin: 0;
-    height: 100%;
     padding: 20px 90px;
     width: 100%;
     background-color: @body-background;
-    overflow: auto;
 }
 
-.ant-layout-footer{
+.ant-layout-footer {
     background-color: @body-background;
 }
 </style>

@@ -3,6 +3,7 @@ import service from '@/utils/axios'
 
 interface User {
   nickname: string
+  username: string
   email: string
 }
 

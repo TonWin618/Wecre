@@ -1,4 +1,6 @@
 <template>
+    <h3>Recent Projects</h3>
+    <a-input />
     <a-list item-layout="horizontal" :data-source="projectList">
         <template #renderItem="{ item }">
             <a-list-item>
@@ -35,10 +37,12 @@ const profileStore = useProfileStore()
 const projectStore = useProjectStore()
 
 const projectList: ProjectInfo[] = []
-await profileStore.fetchProfile(authStore.user?.username!)
 const projectNameList: string[] = profileStore.profile?.projects!
 
-projectNameList.forEach(element => {
+try{
+    await profileStore.fetchProfile(authStore.user?.username!)
+    
+    projectNameList.forEach(element => {
     const temp:ProjectInfo = {
         icon:"",
         name:"",
@@ -49,10 +53,19 @@ projectNameList.forEach(element => {
     temp.name = project.name
     temp.updateTime  = new Date(project.updateTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
-    projectList.push()
+    projectList.push(temp)
 });
+}catch(e){
+    console.log(e)
+}
+
+
+
+
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+
+</style>
   
   

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import service from '@/utils/axios'
+import service from '@/utils/service'
 
 export interface Project {
     username: string

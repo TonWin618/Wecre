@@ -28,7 +28,6 @@ function isEmail(input: string): boolean {
 }
 
 function login() {
-    console.log(usernameOrEmail.value);
     if (isEmail(usernameOrEmail.value)) {
         authStore.loginWithEmail(usernameOrEmail.value, password.value)
     } else {

@@ -1,18 +1,18 @@
 <template>
-    <a-layout>
-        <a-layout-sider width="350px">
+    <a-row class="home">
+        <a-col class="home-sider" :span="5">
             <ProjectNameList />
-        </a-layout-sider>
-        <a-layout>
-            <a-layout-content>
-                <h1>Recommend</h1>
-                <RecommendProjects />
-            </a-layout-content>
-            <a-layout-footer>
-                <Footer></Footer>
-            </a-layout-footer>
-        </a-layout>
-    </a-layout>
+        </a-col>
+        <a-col :span="1"></a-col>
+        <a-col class="home-content" :span="11">
+            <RecommendProjects />
+            <Footer></Footer>
+        </a-col>
+        <a-col :span="1"></a-col>
+        <a-col :span="6">
+            
+        </a-col>
+    </a-row>
 </template>
 
 <script setup lang="ts">
@@ -22,27 +22,19 @@ import RecommendProjects from '@/components/Home/RecommendProjects.vue';
 </script>
 
 <style lang="less" scoped>
-.ant-layout {
+.home {
     width: 100%;
     margin: 0;
     background-color: @body-background;
 }
 
-.ant-layout-sider {
-    height: 100%;
-    padding: 10px;
+.home-sider {
+    padding: 20px;
     border-right: 1px solid @border-color-base;
     background-color: @white;
 }
 
-.ant-layout-content {
-    margin: 0;
-    padding: 20px 90px;
-    width: 100%;
-    background-color: @body-background;
-}
-
-.ant-layout-footer {
-    background-color: @body-background;
+.home-content {
+    padding-top: 20px;
 }
 </style>

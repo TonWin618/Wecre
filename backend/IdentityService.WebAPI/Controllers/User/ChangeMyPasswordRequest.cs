@@ -1,0 +1,1 @@
+﻿public record ChangeMyPasswordRequest(string newPassword,string token);
